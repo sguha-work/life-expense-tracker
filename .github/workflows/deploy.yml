@@ -24,6 +24,7 @@ jobs:
           npm run build
           git config --global user.email "sguha1988.life@gmail.com"
           git config --global user.name "sguha-work"
+          git remote set-url origin git@github.com:sguha-work/life-expense-tracker.git
           npm run deploy
         env: 
           CI: true   
