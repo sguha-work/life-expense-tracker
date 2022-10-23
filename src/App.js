@@ -6,6 +6,7 @@ function App() {
       <header className="App-header">
         Life expense tracker
       </header>
+      <table></table>
     </div>
   );
 }
