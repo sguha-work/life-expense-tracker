@@ -1,0 +1,21 @@
+select {
+    width: 70%;
+    height: 50px;
+    font-size: 100%;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 0;
+    background-color: #76afde;
+    border: none;
+    border-bottom: 2px solid #962d22;
+    color: white;
+    padding: 10px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding: 10px;
+  }
+  /* For IE <= 11 */
+  select::-ms-expand {
+    display: none; 
+  }

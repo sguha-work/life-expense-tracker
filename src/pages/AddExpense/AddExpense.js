@@ -1,5 +1,8 @@
+import AddExpenseForm from "../../components/Expense/AddExpense/AddExpenseForm";
 const AddExpense = () => {
-  return <h1>AddExpense</h1>;
+  return (
+    <AddExpenseForm></AddExpenseForm>
+  );
 };
 
 export default AddExpense;
