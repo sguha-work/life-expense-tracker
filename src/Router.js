@@ -4,7 +4,7 @@ import Home from "./pages/Home/Home";
 import AddExpense from "./pages/AddExpense/AddExpense";
 import ListExpense from "./pages/ListExpense/ListExpense";
 const Router = ()=>(
-    <BrowserRouter>
+    <BrowserRouter basename="/life-expense-tracker">
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
