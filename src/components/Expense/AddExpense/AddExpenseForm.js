@@ -1,7 +1,10 @@
 import './AddExpenseForm.css';
-import { useState } from 'react';
 import ExpenseTypeSelect from './ExpenseTypeSelect';
 const AddExpenseForm = () => {
+    /**
+     * The value is coming from the ListCategory->ExpenseTypeSelect component
+     * @param {*} value 
+     */
     const setExpenseType = (value)=>{
         alert(value);
     }

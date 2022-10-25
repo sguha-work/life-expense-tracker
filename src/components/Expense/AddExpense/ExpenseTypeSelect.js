@@ -1,8 +1,8 @@
 import ListCategory from '../../Category/ListCategory';
 import './ExpenseTypeSelect.css';
 const ExpenseTypeSelect = (props) => {
-    const categorySelectionChanged = (event) => {
-        props.setExpenseType(event.target.value);
+    const categorySelectionChanged = (value) => {
+        props.setExpenseType(value);
     }
     return (
         <ListCategory categorySelectionChanged={categorySelectionChanged}></ListCategory>
