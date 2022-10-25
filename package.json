@@ -1,7 +1,7 @@
 {
   "name": "life-expense-tracker",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "homepage":".",
   "start_url": "/",
   "dependencies": {
