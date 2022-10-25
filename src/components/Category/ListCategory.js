@@ -2,14 +2,17 @@ import { useState, useEffect } from "react";
 import CategoryService from "../../services/CategoryService";
 const ListCategory = (props) => {
     const [categories, setCategories] = useState([]);
-    const service = CategoryService.getInstance(); 
-    useEffect(()=>{
+    const service = CategoryService.getInstance();
+    const getCategories = async () => {
+        const data = await service.getCategory();
+        console.log('data from db', data)
+        setCategories(data);
+    }
+    useEffect(() => {
         (async () => {
-            const data = await service.getCategory();
-            console.log('data from db', data)
-            setCategories(data);
+            getCategories();
         })();
-    },[]);    // eslint-disable-line react-hooks/exhaustive-deps 
+    }, []);    // eslint-disable-line react-hooks/exhaustive-deps 
     const selectionChanged = (event) => {
         props.categorySelectionChanged(event.target.value)
     }

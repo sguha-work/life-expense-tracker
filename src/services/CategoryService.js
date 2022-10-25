@@ -36,9 +36,19 @@ class CategoryService {
             if (window.localStorage[this.#localStorageKey] && window.localStorage[this.#localStorageKey] !== '') {
                 existingData = JSON.parse(window.localStorage[this.#localStorageKey]);
             }
-            const dataToInsert = { title: newCategoryData.title, value: newCategoryData.value };
-            existingData.push(dataToInsert);
-            this.#syncNewCategoryToFB(dataToInsert);
+            const dataToInsert = { title: newCategoryData.title.trim(), value: newCategoryData.value.trim() };
+            let alreadyExists = false;
+            existingData.forEach((data) => {
+                if (dataToInsert.title.toLowerCase() === data.title.toLowerCase()) {
+                    alreadyExists = true;
+                }
+            });
+            if (!alreadyExists) {
+                existingData.push(dataToInsert);
+                this.#syncNewCategoryToFB(dataToInsert);
+            } else {
+                throw new Error("This expense type already exists");
+            }
             return Promise.resolve();
         } catch (error) {
             return Promise.reject(error);
