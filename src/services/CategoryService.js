@@ -51,10 +51,26 @@ class CategoryService {
                 this.#syncNewCategoryToFB(dataToInsert);
                 existingData.push(dataToInsert);
                 window.localStorage[this.#localStorageKey] = JSON.stringify(existingData);
-                
+
             } else {
                 throw new Error("This expense type already exists");
             }
+            return Promise.resolve();
+        } catch (error) {
+            return Promise.reject(error);
+        }
+    }
+    deleteCategory(categoryId) {
+        try {
+            this.#fb.deleteDocument(this.#categoryCollectionName, categoryId);
+            const existingData = JSON.parse(window.localStorage[this.#localStorageKey]);
+            let newData = [];
+            existingData.forEach((data) => {
+                if (data.id !== categoryId) {
+                    newData.push(data);
+                }
+            });
+            window.localStorage[this.#localStorageKey] = JSON.stringify(newData);
             return Promise.resolve();
         } catch (error) {
             return Promise.reject(error);

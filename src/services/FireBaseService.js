@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, getDocs, addDoc } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc } from 'firebase/firestore';
 //import { getFirestore, collection, addDoc } from "firebase/firestore";
 class FireBaseService {
     instance = null;
@@ -46,6 +46,16 @@ class FireBaseService {
             const db = getFirestore(this.#app);
             const dbRef = collection(db, collectionName);
             await addDoc(dbRef, data);
+            return Promise.resolve();
+        } catch (error) {
+            console.log('Firebase error', error);
+            return Promise.reject(error);
+        }
+    }
+    async deleteDocument(collectioName, documentId) {
+        try {
+            const db = getFirestore(this.#app);
+            await deleteDoc(doc(db, collectioName, documentId));
             return Promise.resolve();
         } catch (error) {
             console.log('Firebase error', error);
