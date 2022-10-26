@@ -3,13 +3,12 @@ import CategoryService from "../../services/CategoryService";
 const ListCategory = (props) => {
     const [categories, setCategories] = useState([]);
     const service = CategoryService.getInstance();
-    const getCategories = async () => {console.log(3);
+    const getCategories = async () => {
         let data;
         if (props.categories.length) {
             data = props.categories;
         } else {
             data = await service.getCategory();
-            console.log('data from db', data)
         }
         setCategories(data);
     }
@@ -18,8 +17,8 @@ const ListCategory = (props) => {
             getCategories();
         })();
     }, []);    // eslint-disable-line react-hooks/exhaustive-deps 
-    useEffect(()=>{console.log('this called')
-        if(props.categories.length) {alert('data from parent');
+    useEffect(()=>{
+        if(props.categories.length) {
             setCategories(props.categories);
         }
     },[props.categories]);

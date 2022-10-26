@@ -5,9 +5,8 @@ import CategoryService from "../../services/CategoryService";
 const AddExpense = () => {
   const [categoryData, setCategoryData] = useState([]);
   const getLatestCategoryData = async () => {
-    console.log(2)
     const categoryServiceInstance = CategoryService.getInstance();
-    const categories = await categoryServiceInstance.getCategory(); console.log('categories length', categories);
+    const categories = await categoryServiceInstance.getCategory();
     setCategoryData(categories);
   }
   return (

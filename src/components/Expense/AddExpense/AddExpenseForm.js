@@ -10,8 +10,8 @@ const AddExpenseForm = (props) => {
     const setExpenseType = (value)=>{
         alert(value);
     }
-    useEffect(()=>{console.warn('AddExpenseForm');
-        if(props.categories.length) {console.warn('AddExpenseForm-> use effect called for category changes');
+    useEffect(()=>{
+        if(props.categories.length) {
             setCategories(props.categories);
         }
     },[props.categories]);// eslint-disable-line react-hooks/exhaustive-deps 
