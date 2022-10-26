@@ -15,17 +15,21 @@ class CategoryService {
         return this.instance;
     }
     async #refreshCacheOfCategory() {
-        console.log('refresh called');
         const data = await this.#fb.get(this.#categoryCollectionName);
         window.localStorage[this.#localStorageKey] = JSON.stringify(data);
     }
     async getCategory() {
-        if (window.localStorage[this.#localStorageKey] && window.localStorage[this.#localStorageKey] !== '') {
-            this.#refreshCacheOfCategory();
-        } else {
-            await this.#refreshCacheOfCategory()
+        try {
+            if (window.localStorage[this.#localStorageKey] && window.localStorage[this.#localStorageKey] !== '') {
+                this.#refreshCacheOfCategory();
+            } else {
+                await this.#refreshCacheOfCategory();
+            }
+            return Promise.resolve(JSON.parse(window.localStorage[this.#localStorageKey]));
+        } catch (error) {
+            return Promise.reject(error);
         }
-        return JSON.parse(window.localStorage[this.#localStorageKey]);
+
     }
     async #syncNewCategoryToFB(data) {
         await this.#fb.set(this.#categoryCollectionName, data);
@@ -44,8 +48,10 @@ class CategoryService {
                 }
             });
             if (!alreadyExists) {
-                existingData.push(dataToInsert);
                 this.#syncNewCategoryToFB(dataToInsert);
+                existingData.push(dataToInsert);
+                window.localStorage[this.#localStorageKey] = JSON.stringify(existingData);
+                
             } else {
                 throw new Error("This expense type already exists");
             }

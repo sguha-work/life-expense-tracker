@@ -3,9 +3,14 @@ import CategoryService from "../../services/CategoryService";
 const ListCategory = (props) => {
     const [categories, setCategories] = useState([]);
     const service = CategoryService.getInstance();
-    const getCategories = async () => {
-        const data = await service.getCategory();
-        console.log('data from db', data)
+    const getCategories = async () => {console.log(3);
+        let data;
+        if (props.categories.length) {
+            data = props.categories;
+        } else {
+            data = await service.getCategory();
+            console.log('data from db', data)
+        }
         setCategories(data);
     }
     useEffect(() => {
@@ -13,6 +18,11 @@ const ListCategory = (props) => {
             getCategories();
         })();
     }, []);    // eslint-disable-line react-hooks/exhaustive-deps 
+    useEffect(()=>{console.log('this called')
+        if(props.categories.length) {alert('data from parent');
+            setCategories(props.categories);
+        }
+    },[props.categories]);
     const selectionChanged = (event) => {
         props.categorySelectionChanged(event.target.value)
     }
@@ -20,7 +30,7 @@ const ListCategory = (props) => {
         <select onChange={selectionChanged}>
             {
                 categories.map((category) => (
-                    <option key={category.id} value={category.value}>{category.title}</option>
+                    <option key={category.id?category.id:'xxx'} value={category.value}>{category.title}</option>
                 ))
             }
             <option value="">Please select category</option>

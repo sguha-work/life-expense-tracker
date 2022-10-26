@@ -1,17 +1,20 @@
 import { useState } from "react";
 import CategoryService from "../../services/CategoryService";
-const AddCategory = () => {
+const AddCategory = (props) => {
     const [title, setTitle] = useState('');
-    const expenceTypeTitleChanged = (event)=>{
+    const expenceTypeTitleChanged = (event) => {
         setTitle(event.target.value);
     }
-    const addCategoryFormSubmit = (event)=>{
+    const addCategoryFormSubmit = (event) => {
         event.preventDefault();
         const service = CategoryService.getInstance();
         service.setCategory({
             title: title,
             value: title.toLowerCase()
         });
+        if (props.afterCategoryAdded) {console.log(1);
+            props.afterCategoryAdded();
+        }
     }
     return (
         <form onSubmit={addCategoryFormSubmit}>

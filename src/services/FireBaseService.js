@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
+import { getFirestore, collection, getDocs, addDoc } from 'firebase/firestore';
+//import { getFirestore, collection, addDoc } from "firebase/firestore";
 class FireBaseService {
     instance = null;
     #firebaseConfig = {
@@ -43,7 +44,8 @@ class FireBaseService {
     async set(collectionName, data) {
         try {
             const db = getFirestore(this.#app);
-            await db.collection(collectionName).add(data);
+            const dbRef = collection(db, collectionName);
+            await addDoc(dbRef, data);
             return Promise.resolve();
         } catch (error) {
             console.log('Firebase error', error);
