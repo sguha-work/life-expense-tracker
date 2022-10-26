@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/life-expense-tracker/static/css/main.f56a5133.css",
+    "main.js": "/life-expense-tracker/static/js/main.69b09876.js",
+    "static/js/787.27f22591.chunk.js": "/life-expense-tracker/static/js/787.27f22591.chunk.js",
+    "index.html": "/life-expense-tracker/index.html",
+    "main.f56a5133.css.map": "/life-expense-tracker/static/css/main.f56a5133.css.map",
+    "main.69b09876.js.map": "/life-expense-tracker/static/js/main.69b09876.js.map",
+    "787.27f22591.chunk.js.map": "/life-expense-tracker/static/js/787.27f22591.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f56a5133.css",
+    "static/js/main.69b09876.js"
+  ]
+}
