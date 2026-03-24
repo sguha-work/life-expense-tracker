@@ -121,10 +121,6 @@ export const Visualize: React.FC = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-8">
-            <ExpenseBarChart 
-              data={yearlyTrendData} 
-              title="Yearly Expense Trend (Monthly)" 
-            />
             
             <ExpensePieChart 
               data={currentMonthCategoryData} 
@@ -139,6 +135,11 @@ export const Visualize: React.FC = () => {
             <ExpensePieChart 
               data={currentYearCategoryData} 
               title="Year's Category Breakdown" 
+            />
+
+            <ExpenseBarChart 
+              data={yearlyTrendData} 
+              title="Yearly Expense Trend (Monthly)" 
             />
           </div>
         )}

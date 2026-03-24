@@ -11,16 +11,16 @@ const COLORS = ['#3b82f6', '#8b5cf6', '#ec4899', '#f43f5e', '#f97316', '#eab308'
 export const ExpensePieChart: React.FC<ExpensePieChartProps> = ({ data, title }) => {
   if (!data || data.length === 0) {
     return (
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 w-full flex flex-col items-center justify-center min-h-[300px]">
-        <h3 className="text-lg font-bold text-slate-700 mb-2">{title}</h3>
-        <p className="text-slate-400 font-medium text-sm">No data available for this period</p>
+      <div className="bg-card p-6 rounded-2xl shadow-sm border border-main w-full flex flex-col items-center justify-center min-h-[300px]">
+        <h3 className="text-lg font-bold text-main mb-2">{title}</h3>
+        <p className="text-muted font-medium text-sm">No data available for this period</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 w-full">
-      <h3 className="text-lg font-bold text-slate-800 mb-6 text-center">{title}</h3>
+    <div className="bg-card p-6 rounded-2xl shadow-sm border border-main w-full">
+      <h3 className="text-lg font-bold text-main mb-6 text-center">{title}</h3>
       <div className="h-[300px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
