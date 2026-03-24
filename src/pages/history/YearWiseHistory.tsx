@@ -8,10 +8,12 @@ import { AppLayout } from '../../components/layout/AppLayout';
 import { ExpenseCard } from '../../components/ExpenseCard';
 import { Modal } from '../../components/ui/Modal';
 import { ExpenseForm } from '../../components/ExpenseForm';
+import { useTheme } from '../../configuration/ThemeContext';
 import toast from 'react-hot-toast';
 
 export const YearWiseHistory: React.FC = () => {
   const { user } = useOutletContext<{ user: User }>();
+  const { theme } = useTheme();
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [paymentModes, setPaymentModes] = useState<PaymentMode[]>([]);
@@ -112,7 +114,7 @@ export const YearWiseHistory: React.FC = () => {
       <div className="p-4 sm:p-6 space-y-6 pb-24">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h2 className="text-2xl font-extrabold text-slate-800 tracking-tight">Yearly History</h2>
+            <h2 className="text-2xl font-extrabold tracking-tight" style={{ color: theme === 'light' ? 'black' : 'white' }}>Yearly History</h2>
             <p className="text-sm text-slate-500 font-medium">View and manage expenses by year</p>
           </div>
           <div className="relative">

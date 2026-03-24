@@ -134,7 +134,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         <div className="p-4 border-t border-main space-y-3">
           <button
             onClick={toggleTheme}
-            className="flex items-center justify-center space-x-2 w-full p-3 text-main bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl transition-colors font-semibold"
+            className={`flex items-center justify-center space-x-2 w-full p-3 ${theme === 'light' ? 'text-white' : 'text-main'} bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl transition-colors font-semibold`}
           >
             {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
             <span>{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>
