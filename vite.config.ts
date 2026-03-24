@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/life-expense-tracker/',
   plugins: [react(), tailwindcss()],
   envPrefix: ['VITE_', 'FIREBASE_'],
 })
