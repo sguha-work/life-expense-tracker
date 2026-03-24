@@ -25,7 +25,7 @@ jobs:
         env: 
           CI: true   
       - name: deploy
-        uses: crazy-max/ghaction-github-pages@v3
+        uses: sguha-work/life-expense-tracker-main@v1
         with:
           target_branch: gh-pages
           build_dir: build
