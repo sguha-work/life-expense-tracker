@@ -1,0 +1,96 @@
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { motion } from 'framer-motion';
+import { Wallet } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { Input } from '../components/ui/Input';
+import { Button } from '../components/ui/Button';
+import { authService } from '../services/authService';
+
+export const Login: React.FC = () => {
+  const navigate = useNavigate();
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const { register, handleSubmit, formState: { errors } } = useForm();
+
+  const onSubmit = async (data: any) => {
+    try {
+      setError(null);
+      setIsLoading(true);
+      await authService.login(data.phone, data.password);
+      toast.success('Successfully logged in!');
+      navigate('/');
+    } catch (err: any) {
+      setError(err.message || 'Failed to login');
+      toast.error(err.message || 'Failed to login');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-100 flex justify-center w-full">
+      <div className="w-full max-w-md bg-white min-h-screen flex flex-col justify-center px-6 py-12 shadow-2xl relative overflow-hidden">
+        
+        {/* Decorative background blur */}
+        <div className="absolute top-[-10%] left-[-10%] w-64 h-64 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob" />
+        <div className="absolute top-[20%] right-[-10%] w-72 h-72 bg-indigo-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000" />
+        
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="z-10"
+        >
+          <div className="flex justify-center mb-8">
+            <div className="bg-blue-600 p-4 rounded-2xl shadow-lg">
+              <Wallet size={40} className="text-white" />
+            </div>
+          </div>
+          <h2 className="text-3xl font-extrabold text-center text-slate-800 tracking-tight">
+            Welcome Back
+          </h2>
+          <p className="mt-2 text-center text-slate-500 mb-8 font-medium">
+            Manage your life expenses efficiently
+          </p>
+
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+            {error && (
+              <div className="bg-red-50 text-red-600 p-3 rounded-xl text-sm font-semibold border border-red-100">
+                {error}
+              </div>
+            )}
+            
+            <Input
+              label="Phone Number"
+              type="tel"
+              placeholder="1234567890"
+              {...register('phone', { required: 'Phone number is required' })}
+              error={errors.phone?.message as string}
+            />
+            
+            <Input
+              label="Password"
+              type="password"
+              placeholder="••••••••"
+              {...register('password', { required: 'Password is required' })}
+              error={errors.password?.message as string}
+            />
+
+            <Button type="submit" className="w-full py-3 text-lg mt-4" isLoading={isLoading}>
+              Sign In
+            </Button>
+          </form>
+
+          <p className="mt-8 text-center text-sm text-slate-600 font-medium">
+            Don't have an account?{' '}
+            <Link to="/signup" className="text-blue-600 hover:text-blue-500 font-bold transition-colors">
+              Sign up
+            </Link>
+          </p>
+        </motion.div>
+      </div>
+    </div>
+  );
+};
