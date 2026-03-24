@@ -23,6 +23,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   ];
 
   const handleLogout = () => {
+    localStorage.clear(); // clearing everything from localstorage
     authService.logout();
     window.location.href = '#/login';
   };
