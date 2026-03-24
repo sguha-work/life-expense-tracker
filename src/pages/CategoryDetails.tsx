@@ -154,8 +154,9 @@ export const CategoryDetails: React.FC = () => {
           <div className="space-y-6">
             {/* Header */}
             <div className="bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl p-6 text-white shadow-lg">
+              <span>Spent on</span>
               <p className="text-purple-100 font-medium tracking-wide text-sm mb-1 uppercase">
-                {currentCategory.name} - {monthName}
+                 <b>{currentCategory.name}</b> - {monthName}
               </p>
               <div className="flex items-baseline space-x-2">
                 <span className="text-4xl font-extrabold tracking-tight">₹{totalAmount.toFixed(2)}</span>
