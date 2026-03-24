@@ -148,6 +148,13 @@ export const Home: React.FC = () => {
         {/* Header Stats */}
         <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10" />
+          <button
+            onClick={handleSync}
+            className="absolute top-4 right-4 p-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors"
+            title="Sync"
+          >
+            <RefreshCw size={16} className="text-white" />
+          </button>
           <p className="text-blue-100 font-medium tracking-wide text-sm mb-1 uppercase">Today's Expense</p>
           <div className="flex items-baseline space-x-2">
             <span className="text-4xl font-extrabold tracking-tight">₹{todayTotal.toFixed(2)}</span>
@@ -180,14 +187,6 @@ export const Home: React.FC = () => {
           onClick={() => handleOpenForm()}
         >
           <Plus size={20} className="mr-2" /> Add Expense
-        </Button>
-
-        {/* Sync Button */}
-        <Button 
-          className="w-full py-4 rounded-2xl shadow-md text-base bg-gray-500 hover:bg-gray-600"
-          onClick={handleSync}
-        >
-          <RefreshCw size={20} className="mr-2" /> Sync
         </Button>
 
         {/* Today's List */}
