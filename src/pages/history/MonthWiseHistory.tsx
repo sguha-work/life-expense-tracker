@@ -118,12 +118,12 @@ export const MonthWiseHistory: React.FC = () => {
   return (
     <AppLayout>
       <div className="p-4 sm:p-6 space-y-6 pb-24">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
           <div>
             <h2 className="text-2xl font-extrabold tracking-tight" style={{ color: theme === 'light' ? 'black' : 'white' }}>Month-wise History</h2>
             <p className="text-sm text-slate-500 font-medium">View and manage expenses by month</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 mt-4">
             <select
               value={selectedMonth}
               onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
