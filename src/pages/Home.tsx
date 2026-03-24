@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useOutletContext, useNavigate } from 'react-router-dom';
-import { Plus, Edit2, Trash2, TrendingUp } from 'lucide-react';
-import { User, Expense, Category, PaymentMode } from '../interfaces';
+import { Plus, TrendingUp } from 'lucide-react';
+import { User, Expense, Category, PaymentMode, DEFAULT_PAYMENT_MODES } from '../interfaces';
 import { expenseService } from '../services/expenseService';
 import { categoryService } from '../services/categoryService';
 import { paymentModeService } from '../services/paymentModeService';
@@ -10,6 +10,7 @@ import { Button } from '../components/ui/Button';
 import { Modal } from '../components/ui/Modal';
 import { ExpenseForm } from '../components/ExpenseForm';
 import { AppLayout } from '../components/layout/AppLayout';
+import { ExpenseCard } from '../components/ExpenseCard';
 
 export const Home: React.FC = () => {
   const { user } = useOutletContext<{ user: User }>();
@@ -45,8 +46,8 @@ export const Home: React.FC = () => {
     }
   };
 
-  const todayStart = new Date();
-  todayStart.setHours(0, 0, 0, 0);
+  const today = new Date();
+  const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
   const monthStart = new Date(todayStart.getFullYear(), todayStart.getMonth(), 1);
 
   const todaysExpenses = useMemo(() => {
@@ -56,6 +57,17 @@ export const Home: React.FC = () => {
   const todayTotal = useMemo(() => {
     return todaysExpenses.reduce((sum, e) => sum + e.amount, 0);
   }, [todaysExpenses]);
+
+  const creditTotal = useMemo(() => {
+    return todaysExpenses
+      .filter(e => {
+        const mode = paymentModes.find(m => m.name === e.mode) || DEFAULT_PAYMENT_MODES.find(m => m.name === e.mode);
+        return mode?.isCredit;
+      })
+      .reduce((sum, e) => sum + e.amount, 0);
+  }, [todaysExpenses, paymentModes]);
+
+  const otherTotal = useMemo(() => todayTotal - creditTotal, [todayTotal, creditTotal]);
 
   const monthTotal = useMemo(() => {
     return expenses
@@ -127,6 +139,17 @@ export const Home: React.FC = () => {
             <span className="text-4xl font-extrabold tracking-tight">₹{todayTotal.toFixed(2)}</span>
             <span className="text-blue-200 text-sm font-medium">INR</span>
           </div>
+
+          <div className="mt-4 grid grid-cols-2 gap-4">
+            <div className="bg-white/10 rounded-xl p-3 backdrop-blur-sm border border-white/10">
+              <p className="text-[10px] text-blue-100 uppercase font-bold tracking-wider mb-1">Credit</p>
+              <p className="text-xl font-bold">₹{creditTotal.toFixed(2)}</p>
+            </div>
+            <div className="bg-white/10 rounded-xl p-3 backdrop-blur-sm border border-white/10">
+              <p className="text-[10px] text-blue-100 uppercase font-bold tracking-wider mb-1">Other</p>
+              <p className="text-xl font-bold">₹{otherTotal.toFixed(2)}</p>
+            </div>
+          </div>
           
           <div className="mt-6 pt-4 border-t border-white/20 flex items-center justify-between text-sm">
             <div className="flex items-center space-x-2 text-blue-50">
@@ -163,36 +186,13 @@ export const Home: React.FC = () => {
           ) : (
             <div className="space-y-3">
               {todaysExpenses.map((expense) => (
-                <div key={expense.id} className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between group transition-all hover:shadow-md">
-                  <div className="flex-1">
-                    <p className="font-semibold text-slate-800">{expense.description}</p>
-                    <div className="flex space-x-2 text-xs font-medium mt-1">
-                      <span className="text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
-                        {getCategoryName(expense.categoryId)}
-                      </span>
-                      <span className="text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
-                        {expense.mode}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-4">
-                    <span className="font-bold text-slate-800">₹{expense.amount.toFixed(2)}</span>
-                    <div className="flex space-x-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-                      <button 
-                        onClick={() => handleOpenForm(expense)}
-                        className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                      >
-                        <Edit2 size={16} />
-                      </button>
-                      <button 
-                        onClick={() => expense.id && handleDelete(expense.id)}
-                        className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  </div>
-                </div>
+                <ExpenseCard
+                  key={expense.id}
+                  expense={expense}
+                  categoryName={getCategoryName(expense.categoryId)}
+                  onEdit={handleOpenForm}
+                  onDelete={handleDelete}
+                />
               ))}
             </div>
           )}

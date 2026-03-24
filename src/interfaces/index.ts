@@ -9,16 +9,17 @@ export interface User {
 }
 
 export const DEFAULT_PAYMENT_MODES = [
-  { id: 'Cash', name: 'Cash' },
-  { id: 'Credit', name: 'Credit' },
-  { id: 'UPI', name: 'UPI' },
-  { id: 'UPI Credit', name: 'UPI Credit' }
+  { id: 'Cash', name: 'Cash', isCredit: false },
+  { id: 'Credit', name: 'Credit', isCredit: true },
+  { id: 'UPI', name: 'UPI', isCredit: false },
+  { id: 'UPI Credit', name: 'UPI Credit', isCredit: true }
 ];
 
 export interface PaymentMode {
   id?: string;
   createdBy: string;
   name: string;
+  isCredit: boolean;
   createdOn: number;
   modifiedBy?: string;
   modifiedOn?: number;

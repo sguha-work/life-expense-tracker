@@ -19,7 +19,7 @@ export const PaymentModes: React.FC = () => {
   const [editingMode, setEditingMode] = useState<PaymentMode | undefined>(undefined);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<{ name: string }>();
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<{ name: string; isCredit: boolean }>();
 
   useEffect(() => {
     fetchModes();
@@ -27,9 +27,9 @@ export const PaymentModes: React.FC = () => {
 
   useEffect(() => {
     if (editingMode) {
-      reset({ name: editingMode.name });
+      reset({ name: editingMode.name, isCredit: !!editingMode.isCredit });
     } else {
-      reset({ name: '' });
+      reset({ name: '', isCredit: false });
     }
   }, [editingMode, reset]);
 
@@ -56,12 +56,13 @@ export const PaymentModes: React.FC = () => {
     reset({ name: '' });
   };
 
-  const onSubmit = async (data: { name: string }) => {
+  const onSubmit = async (data: { name: string; isCredit: boolean }) => {
     setIsSubmitting(true);
     try {
       if (editingMode?.id) {
         await paymentModeService.updatePaymentMode(editingMode.id, { 
           name: data.name,
+          isCredit: data.isCredit,
           modifiedBy: user.id,
           modifiedOn: Date.now()
         });
@@ -69,6 +70,7 @@ export const PaymentModes: React.FC = () => {
       } else {
         await paymentModeService.addPaymentMode({ 
           name: data.name, 
+          isCredit: data.isCredit,
           createdBy: user.id,
           createdOn: Date.now()
         });
@@ -143,7 +145,12 @@ export const PaymentModes: React.FC = () => {
                 <div className="space-y-2">
                   {customModes.map((mode) => (
                     <div key={mode.id} className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between group transition-all hover:shadow-md hover:border-blue-100">
-                      <span className="font-semibold text-slate-800">{mode.name}</span>
+                      <div className="flex flex-col">
+                        <span className="font-semibold text-slate-800">{mode.name}</span>
+                        {mode.isCredit && (
+                          <span className="text-[10px] font-bold text-red-500 uppercase tracking-tight mt-0.5">Credit Mode</span>
+                        )}
+                      </div>
                       <div className="flex space-x-2">
                         <button 
                           onClick={() => handleOpenModal(mode)}
@@ -179,6 +186,17 @@ export const PaymentModes: React.FC = () => {
             {...register('name', { required: 'Name is required' })}
             error={errors.name?.message}
           />
+          <div className="flex items-center space-x-3 p-1">
+            <input
+              type="checkbox"
+              id="isCredit"
+              className="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500"
+              {...register('isCredit')}
+            />
+            <label htmlFor="isCredit" className="text-sm font-medium text-slate-700">
+              Credit Mode (Calculate under credits)
+            </label>
+          </div>
           <div className="pt-4 flex space-x-3">
             <Button type="button" variant="outline" className="flex-1" onClick={handleCloseModal} disabled={isSubmitting}>
               Cancel

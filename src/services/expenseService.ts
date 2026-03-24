@@ -5,7 +5,7 @@ import { Expense } from '../interfaces';
 const EXPENSES_COLLECTION = 'expenses';
 
 export const expenseService = {
-  async getExpenses(userId: string, startDate?: number, endDate?: number): Promise<Expense[]> {
+  async getExpenses(userId: string, date?: number, month?: number, year?: number): Promise<Expense[]> {
     let q = query(
       collection(db, EXPENSES_COLLECTION),
       where('userId', '==', userId)
@@ -17,11 +17,25 @@ export const expenseService = {
     // Sort descending by createdAt
     expenses.sort((a, b) => b.createdAt - a.createdAt);
     
-    if (startDate) {
-      expenses = expenses.filter(e => e.createdAt >= startDate);
-    }
-    if (endDate) {
-      expenses = expenses.filter(e => e.createdAt <= endDate);
+    if (year !== undefined) {
+      if (month !== undefined) {
+        if (date !== undefined) {
+          // Specific date
+          const start = new Date(year, month, date).getTime();
+          const end = new Date(year, month, date, 23, 59, 59, 999).getTime();
+          expenses = expenses.filter(e => e.createdAt >= start && e.createdAt <= end);
+        } else {
+          // Specific month
+          const start = new Date(year, month, 1).getTime();
+          const end = new Date(year, month + 1, 0, 23, 59, 59, 999).getTime();
+          expenses = expenses.filter(e => e.createdAt >= start && e.createdAt <= end);
+        }
+      } else {
+        // Specific year
+        const start = new Date(year, 0, 1).getTime();
+        const end = new Date(year, 11, 31, 23, 59, 59, 999).getTime();
+        expenses = expenses.filter(e => e.createdAt >= start && e.createdAt <= end);
+      }
     }
     
     return expenses;
