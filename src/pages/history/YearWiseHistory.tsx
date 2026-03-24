@@ -114,6 +114,10 @@ export const YearWiseHistory: React.FC = () => {
     navigate(`/category-details?id=${categoryId}`);
   };
 
+  const handlePaymentModeClick = (mode: string) => {
+    navigate(`/payment-mode-details?mode=${encodeURIComponent(mode)}`);
+  };
+
   return (
     <AppLayout>
       <div className="p-4 sm:p-6 space-y-6 pb-24">
@@ -126,10 +130,14 @@ export const YearWiseHistory: React.FC = () => {
             <select
               value={selectedYear}
               onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-              className="block w-full px-4 py-2 text-slate-700 bg-white border border-slate-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-medium"
+              className="block w-full px-4 py-2 bg-white border border-slate-200 rounded-xl font-medium text-black shadow-sm [color-scheme:light] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               {[...Array(10)].map((_, i) => (
-                <option key={now.getFullYear() - i} value={now.getFullYear() - i}>
+                <option
+                  key={now.getFullYear() - i}
+                  value={now.getFullYear() - i}
+                  className="bg-white text-black"
+                >
                   {now.getFullYear() - i}
                 </option>
               ))}
@@ -171,6 +179,7 @@ export const YearWiseHistory: React.FC = () => {
                 onEdit={handleOpenForm}
                 onDelete={handleDelete}
                 onCategoryClick={handleCategoryClick}
+                onPaymentModeClick={handlePaymentModeClick}
               />
             ))}
           </div>

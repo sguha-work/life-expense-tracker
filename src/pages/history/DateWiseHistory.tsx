@@ -117,6 +117,10 @@ export const DateWiseHistory: React.FC = () => {
     navigate(`/category-details?id=${categoryId}`);
   };
 
+  const handlePaymentModeClick = (mode: string) => {
+    navigate(`/payment-mode-details?mode=${encodeURIComponent(mode)}`);
+  };
+
   return (
     <AppLayout>
       <div className="p-4 sm:p-6 space-y-6 pb-24">
@@ -170,6 +174,7 @@ export const DateWiseHistory: React.FC = () => {
                 onEdit={handleOpenForm}
                 onDelete={handleDelete}
                 onCategoryClick={handleCategoryClick}
+                onPaymentModeClick={handlePaymentModeClick}
               />
             ))}
           </div>

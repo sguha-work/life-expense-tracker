@@ -11,11 +11,11 @@ import { ExpenseCard } from '../components/ExpenseCard';
 import { Modal } from '../components/ui/Modal';
 import { ExpenseForm } from '../components/ExpenseForm';
 
-export const CategoryDetails: React.FC = () => {
+export const PaymentModeDetails: React.FC = () => {
   const { user } = useOutletContext<{ user: User }>();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const categoryId = searchParams.get('id');
+  const modeName = searchParams.get('mode');
 
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -27,13 +27,13 @@ export const CategoryDetails: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    if (!categoryId) {
-      toast.error('Category not found');
+    if (!modeName) {
+      toast.error('Payment mode not found');
       navigate('/');
       return;
     }
     fetchData();
-  }, [user.id, categoryId]);
+  }, [user.id, modeName]);
 
   const fetchData = async () => {
     setLoading(true);
@@ -54,31 +54,31 @@ export const CategoryDetails: React.FC = () => {
     }
   };
 
-  const currentCategory = useMemo(() => {
-    return categories.find(c => c.id === categoryId);
-  }, [categories, categoryId]);
-
   const now = new Date();
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
   const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
 
   const monthExpenses = useMemo(() => {
     return expenses.filter(
-      e => e.categoryId === categoryId && e.createdAt >= monthStart.getTime() && e.createdAt <= monthEnd.getTime()
+      e =>
+        e.mode === modeName &&
+        e.createdAt >= monthStart.getTime() &&
+        e.createdAt <= monthEnd.getTime()
     );
-  }, [expenses, categoryId, monthStart, monthEnd]);
+  }, [expenses, modeName, monthStart, monthEnd]);
 
   const totalAmount = useMemo(() => {
     return monthExpenses.reduce((sum, e) => sum + e.amount, 0);
   }, [monthExpenses]);
 
-  const expensesByPaymentMode = useMemo(() => {
-    const byMode: { [key: string]: number } = {};
+  const expensesByCategory = useMemo(() => {
+    const byCategory: { [key: string]: number } = {};
     monthExpenses.forEach(expense => {
-      byMode[expense.mode] = (byMode[expense.mode] || 0) + expense.amount;
+      const label = categories.find(c => c.id === expense.categoryId)?.name || 'Unknown';
+      byCategory[label] = (byCategory[label] || 0) + expense.amount;
     });
-    return byMode;
-  }, [monthExpenses]);
+    return byCategory;
+  }, [monthExpenses, categories]);
 
   const handleOpenForm = (expense?: Expense) => {
     setEditingExpense(expense);
@@ -128,7 +128,7 @@ export const CategoryDetails: React.FC = () => {
 
   const getCategoryName = (id: string) => categories.find(c => c.id === id)?.name || 'Unknown';
 
-  const handleCategoryNavigate = (categoryId: string) => {
+  const handleCategoryClick = (categoryId: string) => {
     navigate(`/category-details?id=${categoryId}`);
   };
 
@@ -136,12 +136,11 @@ export const CategoryDetails: React.FC = () => {
     navigate(`/payment-mode-details?mode=${encodeURIComponent(mode)}`);
   };
 
-  const monthName = monthStart.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  const monthLabel = monthStart.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 
   return (
     <AppLayout>
       <div className="p-4 sm:p-6 pb-24 space-y-6">
-        {/* Back Button */}
         <button
           onClick={() => navigate('/')}
           className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
@@ -154,33 +153,27 @@ export const CategoryDetails: React.FC = () => {
           <div className="flex justify-center py-12">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
           </div>
-        ) : !currentCategory ? (
-          <div className="text-center py-12 bg-card rounded-2xl border border-main shadow-sm">
-            <p className="text-muted font-medium">Category not found</p>
-          </div>
         ) : (
           <div className="space-y-6">
-            {/* Header */}
-            <div className="bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl p-6 text-white shadow-lg">
-              <span>Spent on</span>
-              <p className="text-purple-100 font-medium tracking-wide text-sm mb-1 uppercase">
-                 <b>{currentCategory.name}</b> - {monthName}
+            <div className="bg-gradient-to-br from-cyan-600 to-blue-700 rounded-2xl p-6 text-white shadow-lg">
+              <span>Spent via</span>
+              <p className="text-cyan-100 font-medium tracking-wide text-sm mb-1 uppercase">
+                <b>{modeName}</b> — {monthLabel}
               </p>
               <div className="flex items-baseline space-x-2">
                 <span className="text-4xl font-extrabold tracking-tight">₹{totalAmount.toFixed(2)}</span>
-                <span className="text-purple-200 text-sm font-medium">Total</span>
+                <span className="text-cyan-200 text-sm font-medium">Total</span>
               </div>
-              <p className="text-purple-100 text-sm mt-2">{monthExpenses.length} transaction(s)</p>
+              <p className="text-cyan-100 text-sm mt-2">{monthExpenses.length} transaction(s)</p>
             </div>
 
-            {/* Payment Mode Breakdown */}
-            {Object.keys(expensesByPaymentMode).length > 0 && (
+            {Object.keys(expensesByCategory).length > 0 && (
               <div className="bg-card rounded-2xl p-6 border border-main shadow-sm">
-                <h3 className="text-lg font-bold text-main mb-4">Breakdown by Payment Mode</h3>
+                <h3 className="text-lg font-bold text-main mb-4">Breakdown by Category</h3>
                 <div className="space-y-3">
-                  {Object.entries(expensesByPaymentMode).map(([mode, amount]) => (
-                    <div key={mode} className="flex items-center justify-between p-3 bg-primary rounded-lg">
-                      <span className="font-medium text-main">{mode}</span>
+                  {Object.entries(expensesByCategory).map(([name, amount]) => (
+                    <div key={name} className="flex items-center justify-between p-3 bg-primary rounded-lg">
+                      <span className="font-medium text-main">{name}</span>
                       <span className="font-bold text-main">₹{amount.toFixed(2)}</span>
                     </div>
                   ))}
@@ -188,23 +181,24 @@ export const CategoryDetails: React.FC = () => {
               </div>
             )}
 
-            {/* Expenses List */}
             <div>
               <h3 className="text-lg font-bold text-main mb-4 px-1">Transactions</h3>
               {monthExpenses.length === 0 ? (
                 <div className="text-center py-12 bg-card rounded-2xl border border-main shadow-sm">
-                  <p className="text-muted font-medium">No expenses in this category for {monthName}</p>
+                  <p className="text-muted font-medium">
+                    No expenses with this payment mode for {monthLabel}
+                  </p>
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {monthExpenses.map((expense) => (
+                  {monthExpenses.map(expense => (
                     <ExpenseCard
                       key={expense.id}
                       expense={expense}
                       categoryName={getCategoryName(expense.categoryId)}
                       onEdit={handleOpenForm}
                       onDelete={handleDelete}
-                      onCategoryClick={handleCategoryNavigate}
+                      onCategoryClick={handleCategoryClick}
                       onPaymentModeClick={handlePaymentModeClick}
                     />
                   ))}

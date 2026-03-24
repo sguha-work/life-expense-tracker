@@ -8,6 +8,7 @@ interface ExpenseCardProps {
   onEdit: (expense: Expense) => void;
   onDelete: (id: string) => void;
   onCategoryClick?: (categoryId: string) => void;
+  onPaymentModeClick?: (mode: string) => void;
 }
 
 export const ExpenseCard: React.FC<ExpenseCardProps> = ({
@@ -15,10 +16,14 @@ export const ExpenseCard: React.FC<ExpenseCardProps> = ({
   categoryName,
   onEdit,
   onCategoryClick,
+  onPaymentModeClick,
   onDelete
 }) => {
-  const formatTime = (timestamp: number) => {
-    return new Date(timestamp).toLocaleTimeString('en-US', {
+  const formatDateTime = (timestamp: number) => {
+    return new Date(timestamp).toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
       hour12: true
@@ -30,16 +35,29 @@ export const ExpenseCard: React.FC<ExpenseCardProps> = ({
     <div className="bg-card p-4 rounded-2xl shadow-sm border border-main flex items-center justify-between group transition-all hover:shadow-md">
       <div className="flex-1">
         <p className="font-semibold text-main">{expense.description} </p>
-        <p className="text-xs">( {formatTime(expense.createdAt)} )</p>
-        <button
+        <p className="text-xs">( {formatDateTime(expense.createdAt)} )</p>
+        <div className="mt-1 flex flex-wrap gap-2 items-center">
+          <button
+            type="button"
             onClick={() => onCategoryClick?.(expense.categoryId)}
-            className="text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 px-2 py-0.5 rounded-full hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors cursor-pointer"
+            className="inline-flex items-center text-black bg-sky-50 dark:bg-sky-50 px-2.5 py-1 rounded-full text-xs font-medium hover:bg-sky-100 dark:hover:bg-sky-100 transition-colors cursor-pointer"
           >
             {categoryName}
           </button>
-          <span className="text-muted bg-primary px-2 py-0.5 rounded-full">
-            {expense.mode}
-          </span>
+          {onPaymentModeClick ? (
+            <button
+              type="button"
+              onClick={() => onPaymentModeClick(expense.mode)}
+              className="inline-flex items-center text-black bg-sky-50 dark:bg-sky-50 px-2.5 py-1 rounded-full text-xs font-medium hover:bg-sky-100 dark:hover:bg-sky-100 transition-colors cursor-pointer"
+            >
+              {expense.mode}
+            </button>
+          ) : (
+            <span className="inline-flex items-center text-black bg-sky-50 dark:bg-sky-50 px-2.5 py-1 rounded-full text-xs font-medium">
+              {expense.mode}
+            </span>
+          )}
+        </div>
       </div>
       <div className="flex items-center space-x-4">
         <span className="font-bold text-main whitespace-nowrap">₹{expense.amount.toFixed(2)}</span>

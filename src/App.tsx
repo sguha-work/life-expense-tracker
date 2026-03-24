@@ -8,11 +8,15 @@ const Signup = lazy(() => import('./pages/Signup').then(m => ({ default: m.Signu
 const Home = lazy(() => import('./pages/Home').then(m => ({ default: m.Home })));
 const Categories = lazy(() => import('./pages/Categories').then(m => ({ default: m.Categories })));
 const CategoryDetails = lazy(() => import('./pages/CategoryDetails').then(m => ({ default: m.CategoryDetails })));
+const PaymentModeDetails = lazy(() =>
+  import('./pages/PaymentModeDetails').then(m => ({ default: m.PaymentModeDetails }))
+);
 const PaymentModes = lazy(() => import('./pages/PaymentModes').then(m => ({ default: m.PaymentModes })));
 const DateWiseHistory = lazy(() => import('./pages/history/DateWiseHistory').then(m => ({ default: m.DateWiseHistory })));
 const MonthWiseHistory = lazy(() => import('./pages/history/MonthWiseHistory').then(m => ({ default: m.MonthWiseHistory })));
 const YearWiseHistory = lazy(() => import('./pages/history/YearWiseHistory').then(m => ({ default: m.YearWiseHistory })));
 const Visualize = lazy(() => import('./pages/Visualize').then(m => ({ default: m.Visualize })));
+const ExportReport = lazy(() => import('./pages/ExportReport').then(m => ({ default: m.ExportReport })));
 
 const LoadingSpinner = () => (
   <div className="min-h-screen bg-slate-100 flex items-center justify-center">
@@ -37,11 +41,13 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/categories" element={<Categories />} />
             <Route path="/category-details" element={<CategoryDetails />} />
+            <Route path="/payment-mode-details" element={<PaymentModeDetails />} />
             <Route path="/payment-modes" element={<PaymentModes />} />
             <Route path="/history/date" element={<DateWiseHistory />} />
             <Route path="/history/month" element={<MonthWiseHistory />} />
             <Route path="/history/year" element={<YearWiseHistory />} />
             <Route path="/visualize" element={<Visualize />} />
+            <Route path="/export-report" element={<ExportReport />} />
           </Route>
 
           {/* Catch-all */}

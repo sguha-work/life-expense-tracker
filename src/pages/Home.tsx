@@ -132,6 +132,10 @@ export const Home: React.FC = () => {
     navigate(`/category-details?id=${categoryId}`);
   };
 
+  const handlePaymentModeClick = (mode: string) => {
+    navigate(`/payment-mode-details?mode=${encodeURIComponent(mode)}`);
+  };
+
   return (
     <AppLayout>
       <div className="p-4 sm:p-6 pb-24 space-y-6">
@@ -197,6 +201,7 @@ export const Home: React.FC = () => {
                   onEdit={handleOpenForm}
                   onDelete={handleDelete}
                   onCategoryClick={handleCategoryClick}
+                  onPaymentModeClick={handlePaymentModeClick}
                 />
               ))}
             </div>

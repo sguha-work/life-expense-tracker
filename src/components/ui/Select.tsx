@@ -21,14 +21,18 @@ export const Select: React.FC<SelectProps> = React.forwardRef<HTMLSelectElement,
           <select
             ref={ref}
             className={cn(
-              "flex h-12 w-full appearance-none rounded-xl border border-main bg-card px-4 py-2 pr-10 text-sm text-main shadow-sm transition-colors placeholder:text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:border-transparent disabled:cursor-not-allowed disabled:opacity-50",
+              "flex h-12 w-full appearance-none rounded-xl border border-main bg-card px-4 py-2 pr-10 text-sm text-slate-900 shadow-sm transition-colors [color-scheme:light] placeholder:text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:border-transparent disabled:cursor-not-allowed disabled:opacity-50 dark:text-slate-100 dark:[color-scheme:dark]",
               error && "border-red-500 focus-visible:ring-red-500",
               className
             )}
             {...props}
           >
             {options.map((opt) => (
-              <option key={opt.value} value={opt.value}>
+              <option
+                key={opt.value}
+                value={opt.value}
+                className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
+              >
                 {opt.label}
               </option>
             ))}

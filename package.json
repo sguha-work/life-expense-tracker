@@ -12,7 +12,9 @@
   "dependencies": {
     "autoprefixer": "^10.4.27",
     "bcryptjs": "^3.0.3",
+    "chart.js": "^4.5.1",
     "clsx": "^2.1.1",
+    "exceljs": "^4.4.0",
     "firebase": "^12.11.0",
     "framer-motion": "^12.38.0",
     "js-cookie": "^3.0.5",
