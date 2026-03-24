@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useOutletContext, useNavigate } from 'react-router-dom';
-import { Plus, TrendingUp, RefreshCw } from 'lucide-react';
+import { Plus, TrendingUp } from 'lucide-react';
 import { User, Expense, Category, PaymentMode, DEFAULT_PAYMENT_MODES } from '../interfaces';
 import { expenseService } from '../services/expenseService';
 import { categoryService } from '../services/categoryService';
@@ -11,6 +11,7 @@ import { Modal } from '../components/ui/Modal';
 import { ExpenseForm } from '../components/ExpenseForm';
 import { AppLayout } from '../components/layout/AppLayout';
 import { ExpenseCard } from '../components/ExpenseCard';
+import SyncButton from '../components/ui/SyncButton';
 
 export const Home: React.FC = () => {
   const { user } = useOutletContext<{ user: User }>();
@@ -136,25 +137,20 @@ export const Home: React.FC = () => {
     navigate(`/payment-mode-details?mode=${encodeURIComponent(mode)}`);
   };
 
-  const handleSync = () => {
-    localStorage.clear();
-    fetchData();
-    toast.success('Cache cleared. latest data fetched...');
-  };
-
   return (
     <AppLayout>
       <div className="p-4 sm:p-6 pb-24 space-y-6">
         {/* Header Stats */}
         <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10" />
-          <button
+          {/* <button
             onClick={handleSync}
             className="absolute top-4 right-4 p-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors"
             title="Sync"
           >
             <RefreshCw size={16} className="text-white" />
-          </button>
+          </button> */}
+          <SyncButton fetchData={fetchData}></SyncButton>
           <p className="text-blue-100 font-medium tracking-wide text-sm mb-1 uppercase">Today's Expense</p>
           <div className="flex items-baseline space-x-2">
             <span className="text-4xl font-extrabold tracking-tight">₹{todayTotal.toFixed(2)}</span>
