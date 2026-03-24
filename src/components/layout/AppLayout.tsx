@@ -27,7 +27,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
               <Menu size={24} />
             </button>
             <h1 className="text-xl font-semibold tracking-wide truncate max-w-[200px]">
-              Life Expense Tracker
+              Life ExpenseTracker
             </h1>
           </div>
         </header>
