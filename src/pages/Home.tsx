@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useOutletContext, useNavigate } from 'react-router-dom';
-import { Plus, TrendingUp } from 'lucide-react';
+import { Plus, TrendingUp, RefreshCw } from 'lucide-react';
 import { User, Expense, Category, PaymentMode, DEFAULT_PAYMENT_MODES } from '../interfaces';
 import { expenseService } from '../services/expenseService';
 import { categoryService } from '../services/categoryService';
@@ -136,6 +136,12 @@ export const Home: React.FC = () => {
     navigate(`/payment-mode-details?mode=${encodeURIComponent(mode)}`);
   };
 
+  const handleSync = () => {
+    localStorage.clear();
+    fetchData();
+    toast.success('Cache cleared. latest data fetched...');
+  };
+
   return (
     <AppLayout>
       <div className="p-4 sm:p-6 pb-24 space-y-6">
@@ -174,6 +180,14 @@ export const Home: React.FC = () => {
           onClick={() => handleOpenForm()}
         >
           <Plus size={20} className="mr-2" /> Add Expense
+        </Button>
+
+        {/* Sync Button */}
+        <Button 
+          className="w-full py-4 rounded-2xl shadow-md text-base bg-gray-500 hover:bg-gray-600"
+          onClick={handleSync}
+        >
+          <RefreshCw size={20} className="mr-2" /> Sync
         </Button>
 
         {/* Today's List */}
