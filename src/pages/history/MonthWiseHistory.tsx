@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext, useNavigate } from 'react-router-dom';
 import { User, Expense, Category, PaymentMode, DEFAULT_PAYMENT_MODES } from '../../interfaces';
 import { expenseService } from '../../services/expenseService';
 import { categoryService } from '../../services/categoryService';
@@ -13,6 +13,7 @@ import toast from 'react-hot-toast';
 
 export const MonthWiseHistory: React.FC = () => {
   const { user } = useOutletContext<{ user: User }>();
+  const navigate = useNavigate();
   const { theme } = useTheme();
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -110,6 +111,10 @@ export const MonthWiseHistory: React.FC = () => {
 
   const getCategoryName = (id: string) => categories.find(c => c.id === id)?.name || 'Unknown';
 
+  const handleCategoryClick = (categoryId: string) => {
+    navigate(`/category-details?id=${categoryId}`);
+  };
+
   const months = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
@@ -192,6 +197,7 @@ export const MonthWiseHistory: React.FC = () => {
                 categoryName={getCategoryName(expense.categoryId)}
                 onEdit={handleOpenForm}
                 onDelete={handleDelete}
+                onCategoryClick={handleCategoryClick}
               />
             ))}
           </div>

@@ -7,26 +7,39 @@ interface ExpenseCardProps {
   categoryName: string;
   onEdit: (expense: Expense) => void;
   onDelete: (id: string) => void;
+  onCategoryClick?: (categoryId: string) => void;
 }
 
 export const ExpenseCard: React.FC<ExpenseCardProps> = ({
   expense,
   categoryName,
   onEdit,
+  onCategoryClick,
   onDelete
 }) => {
+  const formatTime = (timestamp: number) => {
+    return new Date(timestamp).toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+  };
+
   return (
+    
     <div className="bg-card p-4 rounded-2xl shadow-sm border border-main flex items-center justify-between group transition-all hover:shadow-md">
       <div className="flex-1">
-        <p className="font-semibold text-main">{expense.description}</p>
-        <div className="flex space-x-2 text-xs font-medium mt-1">
-          <span className="text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 px-2 py-0.5 rounded-full">
+        <p className="font-semibold text-main">{expense.description} </p>
+        <p className="text-xs">( {formatTime(expense.createdAt)} )</p>
+        <button
+            onClick={() => onCategoryClick?.(expense.categoryId)}
+            className="text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 px-2 py-0.5 rounded-full hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors cursor-pointer"
+          >
             {categoryName}
-          </span>
+          </button>
           <span className="text-muted bg-primary px-2 py-0.5 rounded-full">
             {expense.mode}
           </span>
-        </div>
       </div>
       <div className="flex items-center space-x-4">
         <span className="font-bold text-main whitespace-nowrap">₹{expense.amount.toFixed(2)}</span>

@@ -128,6 +128,10 @@ export const Home: React.FC = () => {
 
   const getCategoryName = (id: string) => categories.find(c => c.id === id)?.name || 'Unknown';
 
+  const handleCategoryClick = (categoryId: string) => {
+    navigate(`/category-details?id=${categoryId}`);
+  };
+
   return (
     <AppLayout>
       <div className="p-4 sm:p-6 pb-24 space-y-6">
@@ -192,6 +196,7 @@ export const Home: React.FC = () => {
                   categoryName={getCategoryName(expense.categoryId)}
                   onEdit={handleOpenForm}
                   onDelete={handleDelete}
+                  onCategoryClick={handleCategoryClick}
                 />
               ))}
             </div>
