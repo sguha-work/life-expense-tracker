@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { Calendar } from 'lucide-react';
 import { Input } from './ui/Input';
 import { Select } from './ui/Select';
 import { Button } from './ui/Button';
-import { Expense, Category, ExpenseMode } from '../interfaces';
+import { Expense, Category, PaymentMode, DEFAULT_PAYMENT_MODES } from '../interfaces';
 
 interface ExpenseFormProps {
   initialData?: Expense;
   categories: Category[];
-  onSubmit: (data: Omit<Expense, 'id' | 'createdAt' | 'modifiedAt' | 'userId'>) => Promise<void>;
+  paymentModes: PaymentMode[];
+  onSubmit: (data: Omit<Expense, 'id' | 'modifiedAt' | 'userId'>) => Promise<void>;
   onCancel: () => void;
   isSubmitting?: boolean;
 }
@@ -16,23 +18,34 @@ interface ExpenseFormProps {
 interface FormData {
   description: string;
   amount: number;
-  mode: ExpenseMode;
+  mode: string;
   categoryId: string;
+  datetime: string;
 }
+
+const toLocalISOString = (timestamp: number) => {
+  const d = new Date(timestamp);
+  const pad = (n: number) => n.toString().padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+};
 
 export const ExpenseForm: React.FC<ExpenseFormProps> = ({
   initialData,
   categories,
+  paymentModes,
   onSubmit,
   onCancel,
   isSubmitting
 }) => {
+  const [showDateTime, setShowDateTime] = useState(false);
+  
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
     defaultValues: {
       description: initialData?.description || '',
       amount: initialData?.amount || 0,
-      mode: initialData?.mode || 'Direct',
+      mode: initialData?.mode || 'Cash',
       categoryId: initialData?.categoryId || '',
+      datetime: toLocalISOString(initialData?.createdAt || Date.now()),
     }
   });
 
@@ -41,10 +54,18 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
     categoryOptions.push({ label: 'No Categories Available', value: '' });
   }
 
+  const paymentOptions = [
+    ...DEFAULT_PAYMENT_MODES.map(pm => ({ label: pm.name, value: pm.name })),
+    ...paymentModes.map(pm => ({ label: pm.name, value: pm.name }))
+  ];
+
   const submitHandler = async (data: FormData) => {
     await onSubmit({
-      ...data,
+      description: data.description,
       amount: Number(data.amount),
+      mode: data.mode,
+      categoryId: data.categoryId,
+      createdAt: new Date(data.datetime).getTime(),
     });
   };
 
@@ -56,6 +77,32 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
         {...register('description', { required: 'Description is required' })}
         error={errors.description?.message}
       />
+      
+      <div className={showDateTime ? "block animate-in fade-in slide-in-from-top-2 duration-300" : "hidden"}>
+        <Input
+          label="Date & Time"
+          type="datetime-local"
+          max={toLocalISOString(Date.now())}
+          {...register('datetime', { 
+            required: 'Date and time is required',
+            validate: (value) => new Date(value).getTime() <= Date.now() || 'Cannot select a future date and time'
+          })}
+          error={errors.datetime?.message}
+        />
+      </div>
+      
+      {!showDateTime && (
+        <div className="flex justify-end -mt-2 mb-2">
+          <button 
+            type="button" 
+            onClick={() => setShowDateTime(true)}
+            className="text-sm text-blue-600 font-medium hover:text-blue-700 flex items-center transition-colors"
+          >
+            <Calendar size={14} className="mr-1.5" /> 
+            Show date & time
+          </button>
+        </div>
+      )}
       
       <Input
         label="Amount"
@@ -80,10 +127,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
         label="Payment Mode"
         {...register('mode', { required: 'Payment mode is required' })}
         error={errors.mode?.message}
-        options={[
-          { label: 'Direct', value: 'Direct' },
-          { label: 'Credit', value: 'Credit' }
-        ]}
+        options={paymentOptions}
       />
 
       <div className="pt-4 flex space-x-3">

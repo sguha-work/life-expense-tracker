@@ -1,0 +1,194 @@
+import React, { useEffect, useState } from 'react';
+import { useOutletContext } from 'react-router-dom';
+import { Plus, Edit2, Trash2 } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
+import { User, PaymentMode, DEFAULT_PAYMENT_MODES } from '../interfaces';
+import { paymentModeService } from '../services/paymentModeService';
+import { Button } from '../components/ui/Button';
+import { Input } from '../components/ui/Input';
+import { Modal } from '../components/ui/Modal';
+import { AppLayout } from '../components/layout/AppLayout';
+
+export const PaymentModes: React.FC = () => {
+  const { user } = useOutletContext<{ user: User }>();
+  const [customModes, setCustomModes] = useState<PaymentMode[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingMode, setEditingMode] = useState<PaymentMode | undefined>(undefined);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<{ name: string }>();
+
+  useEffect(() => {
+    fetchModes();
+  }, [user.id]);
+
+  useEffect(() => {
+    if (editingMode) {
+      reset({ name: editingMode.name });
+    } else {
+      reset({ name: '' });
+    }
+  }, [editingMode, reset]);
+
+  const fetchModes = async () => {
+    setLoading(true);
+    try {
+      const fetched = await paymentModeService.getPaymentModes(user.id);
+      setCustomModes(fetched);
+    } catch (error) {
+      console.error('Error fetching payment modes:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleOpenModal = (mode?: PaymentMode) => {
+    setEditingMode(mode);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setEditingMode(undefined);
+    reset({ name: '' });
+  };
+
+  const onSubmit = async (data: { name: string }) => {
+    setIsSubmitting(true);
+    try {
+      if (editingMode?.id) {
+        await paymentModeService.updatePaymentMode(editingMode.id, { 
+          name: data.name,
+          modifiedBy: user.id,
+          modifiedOn: Date.now()
+        });
+        toast.success('Payment Mode updated!');
+      } else {
+        await paymentModeService.addPaymentMode({ 
+          name: data.name, 
+          createdBy: user.id,
+          createdOn: Date.now()
+        });
+        toast.success('Payment Mode added!');
+      }
+      await fetchModes();
+      handleCloseModal();
+    } catch (error) {
+      console.error('Error saving payment mode:', error);
+      toast.error('Failed to save payment mode');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (confirm('Are you sure you want to delete this payment mode? (Expenses using this mode might not display properly)')) {
+      try {
+        await paymentModeService.deletePaymentMode(id);
+        toast.success('Payment mode deleted');
+        await fetchModes();
+      } catch (error) {
+        console.error('Error deleting payment mode:', error);
+        toast.error('Failed to delete payment mode');
+      }
+    }
+  };
+
+  return (
+    <AppLayout>
+      <div className="p-4 sm:p-6 space-y-6 pb-24">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-extrabold text-slate-800 tracking-tight">Payment Modes</h2>
+            <p className="text-sm text-slate-500 font-medium">Manage your payment methods</p>
+          </div>
+          <Button onClick={() => handleOpenModal()} className="rounded-full w-12 h-12 p-0 flex items-center justify-center shadow-md shadow-blue-200">
+            <Plus size={24} />
+          </Button>
+        </div>
+
+        {loading ? (
+          <div className="flex justify-center py-12">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-4">
+            {/* Default Modes */}
+            <div>
+              <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3 px-1">Default Modes</h3>
+              <div className="space-y-2">
+                {DEFAULT_PAYMENT_MODES.map((mode) => (
+                  <div key={mode.id} className="bg-slate-50 p-4 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
+                    <span className="font-medium text-slate-600">{mode.name}</span>
+                    <span className="text-xs font-semibold px-2 py-1 bg-slate-200 text-slate-500 rounded-full">System</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Custom Modes */}
+            <div className="mt-4">
+              <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3 px-1">Your Custom Modes</h3>
+              {customModes.length === 0 ? (
+                <div className="text-center py-8 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                  <p className="text-slate-500 font-medium mb-3">No custom payment modes yet</p>
+                  <Button variant="outline" size="sm" onClick={() => handleOpenModal()}>
+                    Create Custom Mode
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {customModes.map((mode) => (
+                    <div key={mode.id} className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between group transition-all hover:shadow-md hover:border-blue-100">
+                      <span className="font-semibold text-slate-800">{mode.name}</span>
+                      <div className="flex space-x-2">
+                        <button 
+                          onClick={() => handleOpenModal(mode)}
+                          className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                        >
+                          <Edit2 size={18} />
+                        </button>
+                        <button 
+                          onClick={() => mode.id && handleDelete(mode.id)}
+                          className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        title={editingMode ? "Edit Payment Mode" : "New Payment Mode"}
+      >
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <Input
+            label="Method Name"
+            placeholder="e.g. PayPal"
+            {...register('name', { required: 'Name is required' })}
+            error={errors.name?.message}
+          />
+          <div className="pt-4 flex space-x-3">
+            <Button type="button" variant="outline" className="flex-1" onClick={handleCloseModal} disabled={isSubmitting}>
+              Cancel
+            </Button>
+            <Button type="submit" className="flex-1" isLoading={isSubmitting}>
+              {editingMode ? 'Update' : 'Add'}
+            </Button>
+          </div>
+        </form>
+      </Modal>
+    </AppLayout>
+  );
+};

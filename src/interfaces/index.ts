@@ -8,14 +8,28 @@ export interface User {
   createdAt: number;
 }
 
-export type ExpenseMode = 'Credit' | 'Direct';
+export const DEFAULT_PAYMENT_MODES = [
+  { id: 'Cash', name: 'Cash' },
+  { id: 'Credit', name: 'Credit' },
+  { id: 'UPI', name: 'UPI' },
+  { id: 'UPI Credit', name: 'UPI Credit' }
+];
+
+export interface PaymentMode {
+  id?: string;
+  createdBy: string;
+  name: string;
+  createdOn: number;
+  modifiedBy?: string;
+  modifiedOn?: number;
+}
 
 export interface Expense {
   id?: string;
   userId: string;
   description: string;
   amount: number;
-  mode: ExpenseMode;
+  mode: string;
   categoryId: string;
   createdAt: number;
   modifiedAt?: number;

@@ -7,6 +7,7 @@ const Login = lazy(() => import('./pages/Login').then(m => ({ default: m.Login }
 const Signup = lazy(() => import('./pages/Signup').then(m => ({ default: m.Signup })));
 const Home = lazy(() => import('./pages/Home').then(m => ({ default: m.Home })));
 const Categories = lazy(() => import('./pages/Categories').then(m => ({ default: m.Categories })));
+const PaymentModes = lazy(() => import('./pages/PaymentModes').then(m => ({ default: m.PaymentModes })));
 const DateWiseHistory = lazy(() => import('./pages/history/DateWiseHistory').then(m => ({ default: m.DateWiseHistory })));
 const MonthWiseHistory = lazy(() => import('./pages/history/MonthWiseHistory').then(m => ({ default: m.MonthWiseHistory })));
 const YearWiseHistory = lazy(() => import('./pages/history/YearWiseHistory').then(m => ({ default: m.YearWiseHistory })));
@@ -34,6 +35,7 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Home />} />
             <Route path="/categories" element={<Categories />} />
+            <Route path="/payment-modes" element={<PaymentModes />} />
             <Route path="/history/date" element={<DateWiseHistory />} />
             <Route path="/history/month" element={<MonthWiseHistory />} />
             <Route path="/history/year" element={<YearWiseHistory />} />

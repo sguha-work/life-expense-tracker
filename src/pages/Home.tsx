@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useOutletContext, useNavigate } from 'react-router-dom';
 import { Plus, Edit2, Trash2, TrendingUp } from 'lucide-react';
-import { User, Expense, Category } from '../interfaces';
+import { User, Expense, Category, PaymentMode } from '../interfaces';
 import { expenseService } from '../services/expenseService';
 import { categoryService } from '../services/categoryService';
+import { paymentModeService } from '../services/paymentModeService';
 import toast from 'react-hot-toast';
 import { Button } from '../components/ui/Button';
 import { Modal } from '../components/ui/Modal';
@@ -15,6 +16,7 @@ export const Home: React.FC = () => {
   const navigate = useNavigate();
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [paymentModes, setPaymentModes] = useState<PaymentMode[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,12 +30,14 @@ export const Home: React.FC = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [fetchedExpenses, fetchedCategories] = await Promise.all([
+      const [fetchedExpenses, fetchedCategories, fetchedPaymentModes] = await Promise.all([
         expenseService.getExpenses(user.id),
-        categoryService.getCategories(user.id)
+        categoryService.getCategories(user.id),
+        paymentModeService.getPaymentModes(user.id)
       ]);
       setExpenses(fetchedExpenses);
       setCategories(fetchedCategories);
+      setPaymentModes(fetchedPaymentModes);
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -74,7 +78,7 @@ export const Home: React.FC = () => {
     setEditingExpense(undefined);
   };
 
-  const handleSubmit = async (data: Omit<Expense, 'id' | 'createdAt' | 'modifiedAt' | 'userId'>) => {
+  const handleSubmit = async (data: Omit<Expense, 'id' | 'modifiedAt' | 'userId'>) => {
     setIsSubmitting(true);
     try {
       if (editingExpense?.id) {
@@ -83,8 +87,7 @@ export const Home: React.FC = () => {
       } else {
         await expenseService.addExpense({
           ...data,
-          userId: user.id,
-          createdAt: Date.now()
+          userId: user.id
         });
         toast.success('Expense added!');
       }
@@ -204,6 +207,7 @@ export const Home: React.FC = () => {
         <ExpenseForm
           initialData={editingExpense}
           categories={categories}
+          paymentModes={paymentModes}
           onSubmit={handleSubmit}
           onCancel={handleCloseForm}
           isSubmitting={isSubmitting}

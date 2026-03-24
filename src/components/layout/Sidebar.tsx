@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, PieChart, Layers, Calendar, ChevronDown, List, X, LogOut } from 'lucide-react';
+import { Home, PieChart, Layers, Calendar, ChevronDown, List, X, LogOut, CreditCard } from 'lucide-react';
 import { authService } from '../../services/authService';
 
 interface SidebarProps {
@@ -15,6 +15,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const navLinks = [
     { name: 'Dashboard', path: '/', icon: <Home size={20} /> },
     { name: 'Categories', path: '/categories', icon: <Layers size={20} /> },
+    { name: 'Payment Modes', path: '/payment-modes', icon: <CreditCard size={20} /> },
     { name: 'Visualize', path: '/visualize', icon: <PieChart size={20} /> },
   ];
 
