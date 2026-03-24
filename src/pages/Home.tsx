@@ -143,13 +143,6 @@ export const Home: React.FC = () => {
         {/* Header Stats */}
         <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10" />
-          {/* <button
-            onClick={handleSync}
-            className="absolute top-4 right-4 p-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors"
-            title="Sync"
-          >
-            <RefreshCw size={16} className="text-white" />
-          </button> */}
           <SyncButton fetchData={fetchData}></SyncButton>
           <p className="text-blue-100 font-medium tracking-wide text-sm mb-1 uppercase">Today's Expense</p>
           <div className="flex items-baseline space-x-2">
