@@ -102,10 +102,10 @@ export const Categories: React.FC = () => {
       <div className="p-4 sm:p-6 space-y-6 pb-24">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-extrabold text-slate-800 tracking-tight">Categories</h2>
-            <p className="text-sm text-slate-500 font-medium">Manage your expense types</p>
+            <h2 className="text-2xl font-extrabold text-main tracking-tight">Categories</h2>
+            <p className="text-sm text-muted font-medium">Manage your expense types</p>
           </div>
-          <Button onClick={() => handleOpenModal()} className="rounded-full w-12 h-12 p-0 flex items-center justify-center shadow-md shadow-blue-200">
+          <Button onClick={() => handleOpenModal()} className="rounded-full w-12 h-12 p-0 flex items-center justify-center shadow-md dark:shadow-none">
             <Plus size={24} />
           </Button>
         </div>
@@ -115,8 +115,8 @@ export const Categories: React.FC = () => {
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
           </div>
         ) : categories.length === 0 ? (
-          <div className="text-center py-12 bg-white rounded-2xl border border-slate-100 shadow-sm">
-            <p className="text-slate-500 font-medium mb-4">No categories added yet.</p>
+          <div className="text-center py-12 bg-card rounded-2xl border border-main shadow-sm">
+            <p className="text-muted font-medium mb-4">No categories added yet.</p>
             <Button variant="outline" onClick={() => handleOpenModal()}>
               Create First Category
             </Button>
@@ -124,8 +124,8 @@ export const Categories: React.FC = () => {
         ) : (
           <div className="grid grid-cols-1 gap-3">
             {categories.map((cat) => (
-              <div key={cat.id} className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between group transition-all hover:shadow-md hover:border-blue-100">
-                <span className="font-semibold text-slate-800">{cat.name}</span>
+              <div key={cat.id} className="bg-card p-4 rounded-xl shadow-sm border border-main flex items-center justify-between group transition-all hover:shadow-md hover:border-blue-100 dark:hover:border-blue-900">
+                <span className="font-semibold text-main">{cat.name}</span>
                 <div className="flex space-x-2">
                   <button 
                     onClick={() => handleOpenModal(cat)}

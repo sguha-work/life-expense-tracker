@@ -32,11 +32,11 @@ export const Signup: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 flex justify-center w-full">
-      <div className="w-full max-w-md bg-white min-h-screen flex flex-col justify-center px-6 py-8 shadow-2xl relative overflow-hidden">
+    <div className="min-h-screen bg-primary flex justify-center w-full transition-colors duration-300">
+      <div className="w-full max-w-md bg-card min-h-screen flex flex-col justify-center px-6 py-8 shadow-2xl relative overflow-hidden border-main border-x">
         
         {/* Decorative background blur */}
-        <div className="absolute bottom-[-10%] right-[-10%] w-64 h-64 bg-indigo-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-64 h-64 bg-indigo-200 dark:bg-indigo-900 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob" />
         
         <motion.div
           initial={{ y: 20, opacity: 0 }}
@@ -49,10 +49,10 @@ export const Signup: React.FC = () => {
               <UserPlus size={36} className="text-white" />
             </div>
           </div>
-          <h2 className="text-2xl font-extrabold text-center text-slate-800 tracking-tight">
+          <h2 className="text-2xl font-extrabold text-center text-main tracking-tight">
             Create an Account
           </h2>
-          <p className="mt-2 text-center text-slate-500 mb-6 font-medium text-sm">
+          <p className="mt-2 text-center text-muted mb-6 font-medium text-sm">
             Join tracking your expenses today
           </p>
 

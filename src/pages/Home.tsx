@@ -170,18 +170,18 @@ export const Home: React.FC = () => {
 
         {/* Today's List */}
         <div>
-          <h3 className="text-lg font-bold text-slate-800 mb-4 px-1">Today's Transactions</h3>
+          <h3 className="text-lg font-bold text-main mb-4 px-1">Today's Transactions</h3>
           
           {loading ? (
             <div className="flex justify-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
             </div>
           ) : todaysExpenses.length === 0 ? (
-            <div className="text-center py-12 bg-white rounded-2xl border border-slate-100 shadow-sm">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 text-blue-500 mb-4">
+            <div className="text-center py-12 bg-card rounded-2xl border border-main shadow-sm">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-500 mb-4">
                 <Plus size={32} />
               </div>
-              <p className="text-slate-500 font-medium">No expenses recorded today</p>
+              <p className="text-muted font-medium">No expenses recorded today</p>
             </div>
           ) : (
             <div className="space-y-3">

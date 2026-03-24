@@ -104,10 +104,10 @@ export const PaymentModes: React.FC = () => {
       <div className="p-4 sm:p-6 space-y-6 pb-24">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-extrabold text-slate-800 tracking-tight">Payment Modes</h2>
-            <p className="text-sm text-slate-500 font-medium">Manage your payment methods</p>
+            <h2 className="text-2xl font-extrabold text-main tracking-tight">Payment Modes</h2>
+            <p className="text-sm text-muted font-medium">Manage your payment methods</p>
           </div>
-          <Button onClick={() => handleOpenModal()} className="rounded-full w-12 h-12 p-0 flex items-center justify-center shadow-md shadow-blue-200">
+          <Button onClick={() => handleOpenModal()} className="rounded-full w-12 h-12 p-0 flex items-center justify-center shadow-md dark:shadow-none">
             <Plus size={24} />
           </Button>
         </div>
@@ -120,12 +120,12 @@ export const PaymentModes: React.FC = () => {
           <div className="grid grid-cols-1 gap-4">
             {/* Default Modes */}
             <div>
-              <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3 px-1">Default Modes</h3>
+              <h3 className="text-sm font-bold text-muted uppercase tracking-wider mb-3 px-1">Default Modes</h3>
               <div className="space-y-2">
                 {DEFAULT_PAYMENT_MODES.map((mode) => (
-                  <div key={mode.id} className="bg-slate-50 p-4 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
-                    <span className="font-medium text-slate-600">{mode.name}</span>
-                    <span className="text-xs font-semibold px-2 py-1 bg-slate-200 text-slate-500 rounded-full">System</span>
+                  <div key={mode.id} className="bg-primary p-4 rounded-xl shadow-sm border border-main flex items-center justify-between">
+                    <span className="font-medium text-main opacity-80">{mode.name}</span>
+                    <span className="text-xs font-semibold px-2 py-1 bg-slate-200 dark:bg-slate-700 text-muted rounded-full">System</span>
                   </div>
                 ))}
               </div>
@@ -133,10 +133,10 @@ export const PaymentModes: React.FC = () => {
 
             {/* Custom Modes */}
             <div className="mt-4">
-              <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3 px-1">Your Custom Modes</h3>
+              <h3 className="text-sm font-bold text-muted uppercase tracking-wider mb-3 px-1">Your Custom Modes</h3>
               {customModes.length === 0 ? (
-                <div className="text-center py-8 bg-white rounded-2xl border border-slate-100 shadow-sm">
-                  <p className="text-slate-500 font-medium mb-3">No custom payment modes yet</p>
+                <div className="text-center py-8 bg-card rounded-2xl border border-main shadow-sm">
+                  <p className="text-muted font-medium mb-3">No custom payment modes yet</p>
                   <Button variant="outline" size="sm" onClick={() => handleOpenModal()}>
                     Create Custom Mode
                   </Button>
@@ -144,11 +144,11 @@ export const PaymentModes: React.FC = () => {
               ) : (
                 <div className="space-y-2">
                   {customModes.map((mode) => (
-                    <div key={mode.id} className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between group transition-all hover:shadow-md hover:border-blue-100">
+                    <div key={mode.id} className="bg-card p-4 rounded-xl shadow-sm border border-main flex items-center justify-between group transition-all hover:shadow-md hover:border-blue-100 dark:hover:border-blue-900">
                       <div className="flex flex-col">
-                        <span className="font-semibold text-slate-800">{mode.name}</span>
+                        <span className="font-semibold text-main">{mode.name}</span>
                         {mode.isCredit && (
-                          <span className="text-[10px] font-bold text-red-500 uppercase tracking-tight mt-0.5">Credit Mode</span>
+                          <span className="text-[10px] font-bold text-red-500 dark:text-red-400 uppercase tracking-tight mt-0.5">Credit Mode</span>
                         )}
                       </div>
                       <div className="flex space-x-2">

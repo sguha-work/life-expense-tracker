@@ -10,12 +10,12 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-slate-100 flex justify-center w-full">
+    <div className="min-h-screen bg-primary flex justify-center w-full transition-colors duration-300">
       {/* 
         This is the main mobile wrapper that is centered on the screen 
         for desktop, and takes full width on mobile.
       */}
-      <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden flex flex-col items-center">
+      <div className="w-full max-w-md bg-card min-h-screen relative shadow-2xl overflow-hidden flex flex-col items-center border-main border-x">
         
         {/* Topbar */}
         <header className="w-full bg-blue-600 text-white p-4 flex items-center justify-between z-20 shadow-md">
@@ -36,7 +36,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
         {/* Main Content Area */}
-        <main className="w-full flex-grow overflow-y-auto bg-slate-50 relative">
+        <main className="w-full flex-grow overflow-y-auto bg-primary relative transition-colors duration-300">
           {children}
         </main>
       </div>

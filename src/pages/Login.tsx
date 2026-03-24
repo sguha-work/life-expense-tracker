@@ -30,12 +30,12 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 flex justify-center w-full">
-      <div className="w-full max-w-md bg-white min-h-screen flex flex-col justify-center px-6 py-12 shadow-2xl relative overflow-hidden">
+    <div className="min-h-screen bg-primary flex justify-center w-full transition-colors duration-300">
+      <div className="w-full max-w-md bg-card min-h-screen flex flex-col justify-center px-6 py-12 shadow-2xl relative overflow-hidden border-main border-x">
         
         {/* Decorative background blur */}
-        <div className="absolute top-[-10%] left-[-10%] w-64 h-64 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob" />
-        <div className="absolute top-[20%] right-[-10%] w-72 h-72 bg-indigo-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000" />
+        <div className="absolute top-[-10%] left-[-10%] w-64 h-64 bg-blue-300 dark:bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob" />
+        <div className="absolute top-[20%] right-[-10%] w-72 h-72 bg-indigo-300 dark:bg-indigo-600 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000" />
         
         <motion.div
           initial={{ y: 20, opacity: 0 }}
@@ -48,10 +48,10 @@ export const Login: React.FC = () => {
               <Wallet size={40} className="text-white" />
             </div>
           </div>
-          <h2 className="text-3xl font-extrabold text-center text-slate-800 tracking-tight">
+          <h2 className="text-3xl font-extrabold text-center text-main tracking-tight">
             Welcome Back
           </h2>
-          <p className="mt-2 text-center text-slate-500 mb-8 font-medium">
+          <p className="mt-2 text-center text-muted mb-8 font-medium">
             Manage your life expenses efficiently
           </p>
 

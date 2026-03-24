@@ -13,7 +13,7 @@ export const Select: React.FC<SelectProps> = React.forwardRef<HTMLSelectElement,
     return (
       <div className="flex flex-col space-y-1.5 w-full">
         {label && (
-          <label className="text-sm font-semibold text-slate-700">
+          <label className="text-sm font-semibold text-main opacity-80">
             {label}
           </label>
         )}
@@ -21,7 +21,7 @@ export const Select: React.FC<SelectProps> = React.forwardRef<HTMLSelectElement,
           <select
             ref={ref}
             className={cn(
-              "flex h-12 w-full appearance-none rounded-xl border border-slate-200 bg-white px-4 py-2 pr-10 text-sm text-slate-900 shadow-sm transition-colors placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:border-transparent disabled:cursor-not-allowed disabled:opacity-50",
+              "flex h-12 w-full appearance-none rounded-xl border border-main bg-card px-4 py-2 pr-10 text-sm text-main shadow-sm transition-colors placeholder:text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:border-transparent disabled:cursor-not-allowed disabled:opacity-50",
               error && "border-red-500 focus-visible:ring-red-500",
               className
             )}
@@ -33,7 +33,7 @@ export const Select: React.FC<SelectProps> = React.forwardRef<HTMLSelectElement,
               </option>
             ))}
           </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-muted">
             <ChevronDown size={18} />
           </div>
         </div>

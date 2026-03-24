@@ -46,18 +46,18 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="relative w-full max-w-md bg-white sm:rounded-2xl shadow-2xl h-[100dvh] sm:h-auto overflow-hidden flex flex-col"
+            className="relative w-full max-w-md bg-card sm:rounded-2xl shadow-2xl h-[100dvh] sm:h-auto overflow-hidden flex flex-col border-main sm:border"
           >
-            <div className="flex items-center justify-between p-4 border-b border-gray-100 bg-gray-50/50">
-              <h2 className="text-lg font-bold text-gray-800 tracking-tight">{title}</h2>
+            <div className="flex items-center justify-between p-4 border-b border-main bg-primary transition-colors">
+              <h2 className="text-lg font-bold text-main tracking-tight">{title}</h2>
               <button
                 onClick={onClose}
-                className="p-1.5 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors"
+                className="p-1.5 text-muted hover:text-main hover:bg-primary rounded-full transition-colors"
               >
                 <X size={20} />
               </button>
             </div>
-            <div className="flex-grow overflow-y-auto p-4 sm:p-6 bg-white">
+            <div className="flex-grow overflow-y-auto p-4 sm:p-6 bg-card transition-colors">
               {children}
             </div>
           </motion.div>
