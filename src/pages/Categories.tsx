@@ -59,16 +59,32 @@ export const Categories: React.FC = () => {
   const onSubmit = async (data: { name: string }) => {
     setIsSubmitting(true);
     try {
+      let categorieNamesList: string[] = []
+      Object.keys(localStorage).forEach(key => {
+        if (key.startsWith('cache_categories_')) {
+          let categories = JSON.parse(localStorage.getItem(key) || '[]') as Category[];
+          categories.forEach(cat => {
+            if (cat.createdBy === user.id) {
+              categorieNamesList.push(cat.name.toLowerCase());
+            }
+          });
+        }
+      })
+      if (categorieNamesList.includes(data.name.toLowerCase())) {
+        toast.error('Category with this name already exists!');
+        setIsSubmitting(false);
+        return;
+      }
       if (editingCategory?.id) {
-        await categoryService.updateCategory(editingCategory.id, { 
+        await categoryService.updateCategory(editingCategory.id, {
           name: data.name,
           modifiedBy: user.id,
           modifiedOn: Date.now()
         });
         toast.success('Category updated!');
       } else {
-        await categoryService.addCategory({ 
-          name: data.name, 
+        await categoryService.addCategory({
+          name: data.name,
           createdBy: user.id,
           createdOn: Date.now()
         });
@@ -127,13 +143,13 @@ export const Categories: React.FC = () => {
               <div key={cat.id} className="bg-card p-4 rounded-xl shadow-sm border border-main flex items-center justify-between group transition-all hover:shadow-md hover:border-blue-100 dark:hover:border-blue-900">
                 <span className="font-semibold text-main">{cat.name}</span>
                 <div className="flex space-x-2">
-                  <button 
+                  <button
                     onClick={() => handleOpenModal(cat)}
                     className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                   >
                     <Edit2 size={18} />
                   </button>
-                  <button 
+                  <button
                     onClick={() => cat.id && handleDelete(cat.id)}
                     className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                   >
