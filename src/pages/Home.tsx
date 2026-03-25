@@ -136,8 +136,7 @@ export const Home: React.FC = () => {
   const handlePaymentModeClick = (mode: string) => {
     navigate(`/payment-mode-details?mode=${encodeURIComponent(mode)}`);
   };
-  const formattedDate = (()=>{let d=new Date(),n=d.getDate(),s=["th","st","nd","rd"][(n%10>3||[11,12,13].includes(n%100))?0:n%10],o=n+s;return d.toLocaleDateString('en-US',{weekday:'long',month:'long',year:'numeric'}).replace(/^\w+/,d.toLocaleDateString('en-US',{weekday:'long'})).replace(/\d+/,o)})();
-``
+  const formatted = (()=>{const d=new Date(),n=d.getDate(),s=(n%10==1&&n%100!=11)?"st":(n%10==2&&n%100!=12)?"nd":(n%10==3&&n%100!=13)?"rd":"th";return `${d.toLocaleDateString("en-US",{weekday:"long"})}, ${n}${s} ${d.toLocaleDateString("en-US",{month:"long"})}`})();
   return (
     <AppLayout>
       <div className="p-4 sm:p-6 pb-24 space-y-6">
