@@ -32,7 +32,7 @@ export const authService = {
 
     const docRef = await addDoc(usersRef, newUser);
     const user: User = { id: docRef.id, ...newUser };
-    
+    localStorage['username'] = user.name;
     this.createSession(user);
     return user;
   },
