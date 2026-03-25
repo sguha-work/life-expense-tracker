@@ -73,6 +73,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
     <form onSubmit={handleSubmit(submitHandler)} className="space-y-5">
       <Input
         label="Description"
+        maxLength= {30}
         placeholder="e.g. Groceries"
         {...register('description', { required: 'Description is required' })}
         error={errors.description?.message}
@@ -107,7 +108,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
       <Input
         label="Amount"
         type="number"
-        step="0.01"
+        step="1.00"
         placeholder="0.00"
         {...register('amount', { 
           required: 'Amount is required',
