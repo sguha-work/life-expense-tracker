@@ -35,7 +35,7 @@ export const YearWiseHistory: React.FC = () => {
     setLoading(true);
     try {
       const [fetchedExpenses, fetchedCategories, fetchedPaymentModes] = await Promise.all([
-        expenseService.getExpenses(user.id, undefined, undefined, selectedYear),
+        expenseService.getExpensesFromFirebase(user.id, undefined, undefined, selectedYear),
         categoryService.getCategories(user.id),
         paymentModeService.getPaymentModes(user.id)
       ]);

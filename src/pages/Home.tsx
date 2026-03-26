@@ -24,6 +24,11 @@ export const Home: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingExpense, setEditingExpense] = useState<Expense | undefined>(undefined);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [yesterdayTotals, setYesterdayTotals] = useState({
+    total: 0,
+    creditTotal: 0,
+    otherTotal: 0
+  });
 
   useEffect(() => {
     fetchData();
@@ -40,6 +45,13 @@ export const Home: React.FC = () => {
       setExpenses(fetchedExpenses);
       setCategories(fetchedCategories);
       setPaymentModes(fetchedPaymentModes);
+      setYesterdayTotals(
+        expenseService.getCachedYesterdayTotals(user.id) ?? {
+          total: 0,
+          creditTotal: 0,
+          otherTotal: 0
+        }
+      );
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -162,12 +174,25 @@ export const Home: React.FC = () => {
             </div>
           </div>
           
-          <div className="mt-6 pt-4 border-t border-white/20 flex items-center justify-between text-sm">
-            <div className="flex items-center space-x-2 text-blue-50">
-              <TrendingUp size={16} />
-              <span className="font-semibold">This Month</span>
+          <div className="mt-6 pt-4 border-t border-white/20 space-y-4">
+            <p className="text-xs sm:text-sm text-blue-50 flex flex-nowrap items-center gap-x-2 overflow-x-auto whitespace-nowrap">
+              <span className="text-blue-200 font-medium">Yesterday</span>
+              <span className="font-bold text-white">₹{yesterdayTotals.total.toFixed(2)}</span>
+              <span className="text-blue-300/80" aria-hidden>·</span>
+              <span className="text-blue-200">Credit</span>
+              <span className="font-semibold">₹{yesterdayTotals.creditTotal.toFixed(2)}</span>
+              <span className="text-blue-300/80" aria-hidden>·</span>
+              <span className="text-blue-200">Other</span>
+              <span className="font-semibold">₹{yesterdayTotals.otherTotal.toFixed(2)}</span>
+            </p>
+            <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center space-x-2 text-blue-50">
+                <TrendingUp size={16} />
+                <span className="font-semibold">This Month</span>
+              </div>
+              <span className="font-bold text-white">₹{monthTotal.toFixed(2)}</span>
             </div>
-            <span className="font-bold text-white">₹{monthTotal.toFixed(2)}</span>
+            
           </div>
         </div>
 

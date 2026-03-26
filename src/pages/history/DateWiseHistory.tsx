@@ -38,7 +38,7 @@ export const DateWiseHistory: React.FC = () => {
     try {
       const dateObj = new Date(selectedDate);
       const [fetchedExpenses, fetchedCategories, fetchedPaymentModes] = await Promise.all([
-        expenseService.getExpenses(user.id, dateObj.getDate(), dateObj.getMonth(), dateObj.getFullYear()),
+        expenseService.getExpensesFromFirebase(user.id, dateObj.getDate(), dateObj.getMonth(), dateObj.getFullYear()),
         categoryService.getCategories(user.id),
         paymentModeService.getPaymentModes(user.id)
       ]);
