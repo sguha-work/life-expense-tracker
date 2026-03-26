@@ -38,14 +38,14 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
             >
               <Menu size={24} />
             </button>
-            <h1 className="text-xl font-semibold tracking-wide truncate max-w-[200px]">
+            <h1 className="select-none [-webkit-tap-highlight-color:transparent] text-xl font-semibold tracking-wide truncate max-w-[200px]">
               Life ExpenseTracker
             </h1>
           </div>
 
           {user && (
             <div 
-              className="w-10 h-10 flex items-center justify-center bg-white/20 rounded-full border border-white/30 text-sm font-bold shadow-inner"
+              className="select-none [-webkit-tap-highlight-color:transparent] w-10 h-10 flex items-center justify-center bg-white/20 rounded-full border border-white/30 text-sm font-bold shadow-inner"
               title={user.name}
             >
               {getInitials(user.name)}
