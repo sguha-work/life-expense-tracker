@@ -17,6 +17,7 @@ const MonthWiseHistory = lazy(() => import('./pages/history/MonthWiseHistory').t
 const YearWiseHistory = lazy(() => import('./pages/history/YearWiseHistory').then(m => ({ default: m.YearWiseHistory })));
 const Visualize = lazy(() => import('./pages/Visualize').then(m => ({ default: m.Visualize })));
 const ExportReport = lazy(() => import('./pages/ExportReport').then(m => ({ default: m.ExportReport })));
+const ExpenseDetails = lazy(() => import('./pages/ExpenseDetails').then(m => ({ default: m.ExpenseDetails })));
 
 const LoadingSpinner = () => (
   <div className="min-h-screen bg-slate-100 flex items-center justify-center">
@@ -43,6 +44,8 @@ function App() {
             <Route path="/category-details" element={<CategoryDetails />} />
             <Route path="/payment-mode-details" element={<PaymentModeDetails />} />
             <Route path="/payment-modes" element={<PaymentModes />} />
+            <Route path="/expense-details/:id" element={<ExpenseDetails />} />
+
             <Route path="/history/date" element={<DateWiseHistory />} />
             <Route path="/history/month" element={<MonthWiseHistory />} />
             <Route path="/history/year" element={<YearWiseHistory />} />

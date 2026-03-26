@@ -181,6 +181,7 @@ export const PaymentModes: React.FC = () => {
       >
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Input
+            maxLength={200}
             label="Method Name"
             placeholder="e.g. PayPal"
             {...register('name', { required: 'Name is required' })}

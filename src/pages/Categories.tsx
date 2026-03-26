@@ -169,7 +169,7 @@ export const Categories: React.FC = () => {
       >
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Input
-            maxLength={15}
+            maxLength={200}
             label="Category Name"
             placeholder="e.g. Utilities"
             {...register('name', { required: 'Category name is required' })}

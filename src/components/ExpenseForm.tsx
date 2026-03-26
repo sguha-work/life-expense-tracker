@@ -73,7 +73,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
     <form onSubmit={handleSubmit(submitHandler)} className="space-y-5">
       <Input
         label="Description"
-        maxLength= {20}
+        maxLength= {200}
         placeholder="e.g. Groceries"
         {...register('description', { required: 'Description is required' })}
         error={errors.description?.message}
