@@ -1,0 +1,1 @@
+import{d as a}from"./@firebase-ofTkRnoR.js";a("firebase","12.11.0","app");
