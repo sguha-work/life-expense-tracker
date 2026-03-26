@@ -36,7 +36,7 @@ export const ExpenseCard: React.FC<ExpenseCardProps> = ({
 
   return (
     <div 
-      className="bg-card p-4 rounded-2xl shadow-sm border border-main flex items-center justify-between group transition-all hover:shadow-md cursor-pointer"
+      className="select-none [-webkit-tap-highlight-color:transparent] bg-card p-4 rounded-2xl shadow-sm border border-main flex items-center justify-between group transition-all hover:shadow-md cursor-pointer"
       onClick={() => window.location.hash = `#/expense-details/${expense.id}`}
     >
       <div className="flex-1">
