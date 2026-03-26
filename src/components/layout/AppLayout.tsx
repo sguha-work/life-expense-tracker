@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Sidebar } from './Sidebar';
 import { Menu } from 'lucide-react';
+import { useOutletContext } from 'react-router-dom';
+import { User } from '../../interfaces';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -8,6 +10,16 @@ interface AppLayoutProps {
 
 export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { user } = useOutletContext<{ user: User }>() || { user: null };
+
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map((n) => n[0])
+      .join('')
+      .toUpperCase()
+      .substring(0, 2);
+  };
 
   return (
     <div className="min-h-screen bg-primary flex justify-center w-full transition-colors duration-300">
@@ -30,6 +42,15 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
               Life ExpenseTracker
             </h1>
           </div>
+
+          {user && (
+            <div 
+              className="w-10 h-10 flex items-center justify-center bg-white/20 rounded-full border border-white/30 text-sm font-bold shadow-inner"
+              title={user.name}
+            >
+              {getInitials(user.name)}
+            </div>
+          )}
         </header>
 
         {/* Sidebar Overlay & Content */}
