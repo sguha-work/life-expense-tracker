@@ -98,20 +98,16 @@ export const UserDetails: React.FC = () => {
             <p className="text-base font-medium text-main">{user.phone}</p>
           </div>
 
-          <div className="space-y-1">
-            <p className="text-xs font-semibold text-muted uppercase">User ID</p>
-            <p className="text-sm font-mono text-main break-all">{user.id}</p>
-          </div>
+          {user.email && (
+            <div className="space-y-1">
+              <p className="text-xs font-semibold text-muted uppercase">Email</p>
+              <p className="text-base font-medium text-main break-all">{user.email}</p>
+            </div>
+          )}
 
           <div className="space-y-1">
             <p className="text-xs font-semibold text-muted uppercase">Account created</p>
             <p className="text-base font-medium text-main">{createdLabel}</p>
-          </div>
-
-          <div className="space-y-1">
-            <p className="text-xs font-semibold text-muted uppercase">Password</p>
-            <p className="text-base font-medium text-main tracking-widest">••••••••</p>
-            <p className="text-xs text-muted">Stored securely. It cannot be viewed or changed on this page.</p>
           </div>
         </div>
       </div>

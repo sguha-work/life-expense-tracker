@@ -20,7 +20,7 @@ export const Signup: React.FC = () => {
     try {
       setError(null);
       setIsLoading(true);
-      await authService.register(data.name, data.phone, data.password);
+      await authService.register(data.name, data.phone, data.email, data.password);
       toast.success('Account created successfully!');
       navigate('/');
     } catch (err: any) {
@@ -69,6 +69,7 @@ export const Signup: React.FC = () => {
               placeholder="John Doe"
               {...register('name', { required: 'Name is required' })}
               error={errors.name?.message as string}
+              required={true}
             />
 
             <Input
@@ -80,6 +81,23 @@ export const Signup: React.FC = () => {
                 pattern: { value: /^[0-9]{10}$/, message: 'Invalid phone number (10 digits)' }
               })}
               error={errors.phone?.message as string}
+              required={true}
+            />
+
+            <Input
+              label="Email"
+              type="email"
+              autoComplete="email"
+              placeholder="you@example.com"
+              {...register('email', {
+                required: 'Email is required',
+                pattern: {
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  message: 'Enter a valid email',
+                },
+              })}
+              required={true}
+              error={errors.email?.message as string}
             />
             
             <Input
@@ -91,6 +109,7 @@ export const Signup: React.FC = () => {
                 minLength: { value: 6, message: 'Minimum 6 characters' }
               })}
               error={errors.password?.message as string}
+              required={true}
             />
 
             <Input
@@ -102,6 +121,7 @@ export const Signup: React.FC = () => {
                 validate: value => value === password || 'Passwords do not match'
               })}
               error={errors.confirmPassword?.message as string}
+              required={true}
             />
 
             <Button type="submit" className="w-full py-3 mt-4" variant="primary" isLoading={isLoading}>

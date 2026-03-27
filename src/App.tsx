@@ -5,6 +5,12 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 // Lazy load pages
 const Login = lazy(() => import('./pages/Login').then(m => ({ default: m.Login })));
 const Signup = lazy(() => import('./pages/Signup').then(m => ({ default: m.Signup })));
+const ForgotPassword = lazy(() =>
+  import('./pages/ForgotPassword').then(m => ({ default: m.ForgotPassword }))
+);
+const ResetPassword = lazy(() =>
+  import('./pages/ResetPassword').then(m => ({ default: m.ResetPassword }))
+);
 const Home = lazy(() => import('./pages/Home').then(m => ({ default: m.Home })));
 const Categories = lazy(() => import('./pages/Categories').then(m => ({ default: m.Categories })));
 const CategoryDetails = lazy(() => import('./pages/CategoryDetails').then(m => ({ default: m.CategoryDetails })));
@@ -38,6 +44,8 @@ function App() {
           {/* Public Routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
 
           {/* Protected Routes */}
           <Route element={<ProtectedRoute />}>

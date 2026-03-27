@@ -78,6 +78,15 @@ export const Login: React.FC = () => {
               error={errors.password?.message as string}
             />
 
+            <div className="flex justify-end">
+              <Link
+                to="/forgot-password"
+                className="text-sm font-semibold text-blue-600 hover:text-blue-500 transition-colors"
+              >
+                Forgot password?
+              </Link>
+            </div>
+
             <Button type="submit" className="w-full py-3 text-lg mt-4" isLoading={isLoading}>
               Sign In
             </Button>

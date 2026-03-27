@@ -4,8 +4,12 @@ export interface User {
   id: string; // Firebase document ID
   name: string;
   phone: string;
+  /** Lowercase; optional for accounts created before email was added */
+  email?: string;
   passwordHash: string;
   createdAt: number;
+  passwordResetOtp?: string;
+  passwordResetOtpExpiresAt?: number;
 }
 
 export const DEFAULT_PAYMENT_MODES = [
