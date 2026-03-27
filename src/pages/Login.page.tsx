@@ -6,7 +6,7 @@ import { Wallet } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Input } from '../components/ui/Input';
 import { Button } from '../components/ui/Button';
-import { authService } from '../services/authService';
+import { authService } from '../services/auth.service';
 
 export const Login: React.FC = () => {
   const navigate = useNavigate();

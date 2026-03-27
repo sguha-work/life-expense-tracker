@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
-import { Plus, Edit2, Trash2 } from 'lucide-react';
+import { Plus, Edit2, Trash2, ChevronRight } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { User, Category } from '../interfaces';
-import { categoryService } from '../services/categoryService';
+import { categoryService } from '../services/category.service';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Modal } from '../components/ui/Modal';
@@ -144,12 +144,15 @@ export const Categories: React.FC = () => {
                 <div className="flex flex-col min-w-0">
                   {cat.budgetAmount && cat.budgetAmount > 0 && cat.id ? (
                     <Link
-                      to={`/category-details?id=${cat.id}`}
+                      to={`/category-details?id=${cat.id}&backto=categories`}
                       className="group flex flex-col text-left rounded-lg -m-1 p-1 hover:bg-blue-50/80 dark:hover:bg-blue-950/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                     >
-                      <span className="font-semibold text-main group-hover:text-blue-700 dark:group-hover:text-blue-300 underline-offset-2 group-hover:underline">
-                        {cat.name}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-main group-hover:text-blue-700 dark:group-hover:text-blue-300 underline-offset-2 group-hover:underline">
+                          {cat.name}
+                        </span>
+                        <ChevronRight size={16} className="text-blue-500 group-hover:text-blue-600 dark:group-hover:text-blue-400" />
+                      </div>
                       <span className="text-xs text-muted font-medium">
                         budget {cat.budgetMode === 'd' ? 'daily' : cat.budgetMode === 'y' ? 'yearly' : 'monthly'}{' '}
                         {cat.budgetAmount} INR
@@ -158,12 +161,6 @@ export const Categories: React.FC = () => {
                   ) : (
                     <>
                       <span className="font-semibold text-main">{cat.name}</span>
-                      {cat.budgetAmount && cat.budgetAmount > 0 && (
-                        <span className="text-xs text-muted font-medium">
-                          budget {cat.budgetMode === 'd' ? 'daily' : cat.budgetMode === 'y' ? 'yearly' : 'monthly'}{' '}
-                          {cat.budgetAmount} INR
-                        </span>
-                      )}
                     </>
                   )}
                 </div>

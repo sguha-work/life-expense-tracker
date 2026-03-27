@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useOutletContext, useNavigate } from 'react-router-dom';
 import { User, Expense, Category, PaymentMode, DEFAULT_PAYMENT_MODES } from '../../interfaces';
-import { expenseService } from '../../services/expenseService';
-import { categoryService } from '../../services/categoryService';
-import { paymentModeService } from '../../services/paymentModeService';
+import { expenseService } from '../../services/expense.service';
+import { categoryService } from '../../services/category.service';
+import { paymentModeService } from '../../services/paymentMode.service';
 import { AppLayout } from '../../components/layout/AppLayout';
-import { ExpenseCard } from '../../components/ExpenseCard';
+import { ExpenseCard } from '../../components/ExpenseCard.component';
 import { Modal } from '../../components/ui/Modal';
-import { ExpenseForm } from '../../components/ExpenseForm';
+import { ExpenseForm } from '../../components/ExpenseForm.component';
 import { useTheme } from '../../configuration/ThemeContext';
 import toast from 'react-hot-toast';
 

@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { Edit2, Trash2, Wallet } from 'lucide-react';
 import { User, Category } from '../interfaces';
-import { categoryService } from '../services/categoryService';
+import { categoryService } from '../services/category.service';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Select } from '../components/ui/Select';

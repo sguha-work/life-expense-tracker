@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { ArrowLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { User } from '../interfaces';
-import { authService } from '../services/authService';
+import { authService } from '../services/auth.service';
 import { AppLayout } from '../components/layout/AppLayout';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';

@@ -12,8 +12,8 @@ import {
 } from 'firebase/firestore';
 import { db } from '../adaptors/firebase';
 import { Expense, PaymentMode, DEFAULT_PAYMENT_MODES } from '../interfaces';
-import { cacheService } from './cacheService';
-import { paymentModeService } from './paymentModeService';
+import { cacheService } from './cache.service';
+import { paymentModeService } from './paymentMode.service';
 
 const EXPENSES_COLLECTION = 'expenses';
 

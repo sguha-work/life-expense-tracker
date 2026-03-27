@@ -13,7 +13,7 @@ import bcrypt from 'bcryptjs';
 import Cookies from 'js-cookie';
 import { User, AuthSession } from '../interfaces';
 import { config } from '../configuration/configure';
-import { sendPasswordResetEmail } from './emailService';
+import { sendPasswordResetEmail } from './email.service';
 import { buildResetPasswordUrl } from '../utils/resetPasswordUrl';
 
 const USERS_COLLECTION = 'users';

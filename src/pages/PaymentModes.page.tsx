@@ -4,7 +4,7 @@ import { Plus, Edit2, Trash2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { User, PaymentMode, DEFAULT_PAYMENT_MODES } from '../interfaces';
-import { paymentModeService } from '../services/paymentModeService';
+import { paymentModeService } from '../services/paymentMode.service';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Modal } from '../components/ui/Modal';

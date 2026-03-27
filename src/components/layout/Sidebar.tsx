@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Home, PieChart, Layers, Calendar, ChevronDown, List, X, LogOut, CreditCard, Sun, Moon, FileSpreadsheet, Wallet } from 'lucide-react';
-import { authService } from '../../services/authService';
+import { authService } from '../../services/auth.service';
 import { useTheme } from '../../configuration/ThemeContext';
 
 interface SidebarProps {

@@ -1,7 +1,7 @@
 import { collection, query, where, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../adaptors/firebase';
 import { PaymentMode } from '../interfaces';
-import { cacheService } from './cacheService';
+import { cacheService } from './cache.service';
 
 const PAYMENT_MODES_COLLECTION = 'payment_modes';
 const CACHE_KEY = (userId: string) => `payment_modes_${userId}`;

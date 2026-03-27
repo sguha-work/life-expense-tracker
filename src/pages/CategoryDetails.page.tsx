@@ -2,20 +2,21 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useSearchParams, useNavigate, useOutletContext } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { User, Expense, Category, PaymentMode } from '../interfaces';
-import { expenseService } from '../services/expenseService';
-import { categoryService } from '../services/categoryService';
-import { paymentModeService } from '../services/paymentModeService';
+import { expenseService } from '../services/expense.service';
+import { categoryService } from '../services/category.service';
+import { paymentModeService } from '../services/paymentMode.service';
 import toast from 'react-hot-toast';
 import { AppLayout } from '../components/layout/AppLayout';
-import { ExpenseCard } from '../components/ExpenseCard';
+import { ExpenseCard } from '../components/ExpenseCard.component';
 import { Modal } from '../components/ui/Modal';
-import { ExpenseForm } from '../components/ExpenseForm';
+import { ExpenseForm } from '../components/ExpenseForm.component';
 
 export const CategoryDetails: React.FC = () => {
   const { user } = useOutletContext<{ user: User }>();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const categoryId = searchParams.get('id');
+  const backTo = searchParams.get('backto') || null;
 
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -193,7 +194,7 @@ export const CategoryDetails: React.FC = () => {
       <div className="p-4 sm:p-6 pb-24 space-y-6">
         {/* Back Button */}
         <button
-          onClick={() => navigate('/')}
+          onClick={() => navigate(backTo!=null?`/${backTo}`:'/')}
           className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
         >
           <ArrowLeft size={20} />

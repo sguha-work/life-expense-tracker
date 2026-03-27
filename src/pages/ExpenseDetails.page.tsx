@@ -2,9 +2,9 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate, useOutletContext } from 'react-router-dom';
 import { ArrowLeft, Calendar, Tag, CreditCard, IndianRupee } from 'lucide-react';
 import { User, Expense, Category, PaymentMode, DEFAULT_PAYMENT_MODES } from '../interfaces';
-import { expenseService } from '../services/expenseService';
-import { categoryService } from '../services/categoryService';
-import { paymentModeService } from '../services/paymentModeService';
+import { expenseService } from '../services/expense.service';
+import { categoryService } from '../services/category.service';
+import { paymentModeService } from '../services/paymentMode.service';
 import toast from 'react-hot-toast';
 import { AppLayout } from '../components/layout/AppLayout';
 

@@ -1,7 +1,7 @@
 import { collection, query, where, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../adaptors/firebase';
 import { Category } from '../interfaces';
-import { cacheService } from './cacheService';
+import { cacheService } from './cache.service';
 
 const CATEGORIES_COLLECTION = 'categories';
 const CACHE_KEY = (userId: string) => `categories_${userId}`;

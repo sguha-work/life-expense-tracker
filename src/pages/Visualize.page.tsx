@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { User, Expense, Category } from '../interfaces';
-import { expenseService } from '../services/expenseService';
-import { categoryService } from '../services/categoryService';
+import { expenseService } from '../services/expense.service';
+import { categoryService } from '../services/category.service';
 import { AppLayout } from '../components/layout/AppLayout';
 import { ExpensePieChart } from '../components/charts/ExpensePieChart';
 import { ExpenseBarChart } from '../components/charts/ExpenseBarChart';
