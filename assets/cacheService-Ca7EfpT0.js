@@ -1,0 +1,1 @@
+var e={get(e){const t=localStorage.getItem(`cache_${e}`);if(!t)return null;try{return JSON.parse(t)}catch(r){return null}},set(e,t){try{localStorage.setItem(`cache_${e}`,JSON.stringify(t))}catch(r){}},remove(e){localStorage.removeItem(`cache_${e}`)},clearAll(){Object.keys(localStorage).forEach(e=>{e.startsWith("cache_")&&localStorage.removeItem(e)})}};export{e as t};
