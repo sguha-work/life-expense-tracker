@@ -141,7 +141,14 @@ export const Categories: React.FC = () => {
           <div className="grid grid-cols-1 gap-3">
             {categories.map((cat) => (
               <div key={cat.id} className="bg-card p-4 rounded-xl shadow-sm border border-main flex items-center justify-between group transition-all hover:shadow-md hover:border-blue-100 dark:hover:border-blue-900">
-                <span className="font-semibold text-main">{cat.name}</span>
+                <div className="flex flex-col">
+                  <span className="font-semibold text-main">{cat.name}</span>
+                  {cat.budgetAmount && cat.budgetAmount > 0 && (
+                    <span className="text-xs text-muted font-medium">
+                      budget {cat.budgetMode === 'd' ? 'daily' : cat.budgetMode === 'y' ? 'yearly' : 'monthly'} {cat.budgetAmount} INR
+                    </span>
+                  )}
+                </div>
                 <div className="flex space-x-2">
                   <button
                     onClick={() => handleOpenModal(cat)}

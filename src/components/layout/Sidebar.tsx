@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, PieChart, Layers, Calendar, ChevronDown, List, X, LogOut, CreditCard, Sun, Moon, FileSpreadsheet } from 'lucide-react';
+import { Home, PieChart, Layers, Calendar, ChevronDown, List, X, LogOut, CreditCard, Sun, Moon, FileSpreadsheet, Wallet } from 'lucide-react';
 import { authService } from '../../services/authService';
 import { useTheme } from '../../configuration/ThemeContext';
 
@@ -19,6 +19,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     { name: 'Categories', path: '/categories', icon: <Layers size={20} /> },
     { name: 'Payment Modes', path: '/payment-modes', icon: <CreditCard size={20} /> },
     { name: 'Visualize', path: '/visualize', icon: <PieChart size={20} /> },
+    { name: 'Budget', path: '/budget', icon: <Wallet size={20} /> },
     { name: 'Export report', path: '/export-report', icon: <FileSpreadsheet size={20} /> },
   ];
 

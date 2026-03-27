@@ -45,6 +45,8 @@ export interface Category {
   createdOn: number;
   modifiedBy?: string;
   modifiedOn?: number;
+  budgetMode?: 'd' | 'm' | 'y';
+  budgetAmount?: number;
 }
 
 export interface AuthSession {

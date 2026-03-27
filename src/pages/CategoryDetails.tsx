@@ -138,6 +138,55 @@ export const CategoryDetails: React.FC = () => {
 
   const monthName = monthStart.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 
+  const budgetInfo = useMemo(() => {
+    if (!currentCategory?.budgetAmount) return null;
+
+    const amount = currentCategory.budgetAmount;
+    const mode = currentCategory.budgetMode || 'm';
+
+    let daily = 0, monthly = 0, yearly = 0;
+
+    if (mode === 'd') {
+      daily = amount;
+      monthly = amount * 30;
+      yearly = amount * 365;
+    } else if (mode === 'm') {
+      monthly = amount;
+      daily = amount / 30;
+      yearly = amount * 12;
+    } else if (mode === 'y') {
+      yearly = amount;
+      daily = amount / 365;
+      monthly = amount / 12;
+    }
+
+    // Calculate current spent based on mode
+    let currentSpent = 0;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const yearStart = new Date(today.getFullYear(), 0, 1);
+
+    if (mode === 'd') {
+      currentSpent = expenses.filter(e => e.categoryId === categoryId && e.createdAt >= today.getTime()).reduce((sum, e) => sum + e.amount, 0);
+    } else if (mode === 'm') {
+      currentSpent = totalAmount; // totalAmount is already monthly
+    } else if (mode === 'y') {
+      currentSpent = expenses.filter(e => e.categoryId === categoryId && e.createdAt >= yearStart.getTime()).reduce((sum, e) => sum + e.amount, 0);
+    }
+
+    const gap = amount - currentSpent;
+
+    return {
+      daily,
+      monthly,
+      yearly,
+      mode,
+      amount,
+      gap,
+      currentSpent
+    };
+  }, [currentCategory, expenses, categoryId, totalAmount]);
+
   return (
     <AppLayout>
       <div className="p-4 sm:p-6 pb-24 space-y-6">
@@ -172,6 +221,45 @@ export const CategoryDetails: React.FC = () => {
               </div>
               <p className="text-purple-100 text-sm mt-2">{monthExpenses.length} transaction(s)</p>
             </div>
+
+            {/* Budget Info */}
+            {budgetInfo && (
+              <div className="space-y-4">
+                <div className="bg-card rounded-2xl p-6 border border-main shadow-sm">
+                  <h3 className="text-lg font-bold text-main mb-2">Budget</h3>
+                  <p className="text-sm text-main font-semibold mb-3">
+                    budget {budgetInfo.mode === 'd' ? 'daily' : budgetInfo.mode === 'y' ? 'yearly' : 'monthly'} {budgetInfo.amount.toFixed(2)} INR
+                  </p>
+                  
+                  <div className="grid grid-cols-1 gap-2 border-t border-main pt-3">
+                    {budgetInfo.mode !== 'd' && (
+                      <p className="text-xs text-muted font-medium">Calculated daily budget {budgetInfo.daily.toFixed(2)} INR</p>
+                    )}
+                    {budgetInfo.mode !== 'm' && (
+                      <p className="text-xs text-muted font-medium">Calculated monthly budget {budgetInfo.monthly.toFixed(2)} INR</p>
+                    )}
+                    {budgetInfo.mode !== 'y' && (
+                      <p className="text-xs text-muted font-medium">Calculated yearly budget {budgetInfo.yearly.toFixed(2)} INR</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className={`rounded-2xl p-6 shadow-sm border ${budgetInfo.gap < 0 ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800' : 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'}`}>
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <p className="text-sm font-medium text-muted">Spending Gap ({budgetInfo.mode === 'd' ? 'Daily' : budgetInfo.mode === 'y' ? 'Yearly' : 'Monthly'})</p>
+                      <p className={`text-2xl font-bold ${budgetInfo.gap < 0 ? 'text-red-600' : 'text-green-600'}`}>
+                        ₹{budgetInfo.gap.toFixed(2)}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs font-medium text-muted">Spent: ₹{budgetInfo.currentSpent.toFixed(2)}</p>
+                      <p className="text-xs font-medium text-muted">Limit: ₹{budgetInfo.amount.toFixed(2)}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Payment Mode Breakdown */}
             {Object.keys(expensesByPaymentMode).length > 0 && (
