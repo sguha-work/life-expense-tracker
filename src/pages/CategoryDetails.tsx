@@ -38,8 +38,9 @@ export const CategoryDetails: React.FC = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
+      const n = new Date();
       const [fetchedExpenses, fetchedCategories, fetchedPaymentModes] = await Promise.all([
-        expenseService.getExpenses(user.id),
+        expenseService.getExpenses(user.id, undefined, undefined, n.getFullYear()),
         categoryService.getCategories(user.id),
         paymentModeService.getPaymentModes(user.id)
       ]);
