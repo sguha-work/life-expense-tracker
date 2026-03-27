@@ -1,4 +1,4 @@
-import { collection, query, where, getDocs, addDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs, addDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../adaptors/firebase';
 import bcrypt from 'bcryptjs';
 import Cookies from 'js-cookie';
@@ -105,5 +105,19 @@ export const authService = {
     
     const doc = snapshot.docs[0];
     return { id: doc.id, ...doc.data() } as User;
-  }
+  },
+
+  async updateUserName(userId: string, name: string): Promise<void> {
+    const trimmed = name.trim();
+    if (!trimmed) {
+      throw new Error('Name is required');
+    }
+    const userRef = doc(db, USERS_COLLECTION, userId);
+    await updateDoc(userRef, { name: trimmed });
+    try {
+      localStorage['username'] = trimmed;
+    } catch {
+      /* ignore */
+    }
+  },
 };
