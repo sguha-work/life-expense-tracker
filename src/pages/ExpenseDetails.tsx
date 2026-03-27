@@ -1,89 +1,150 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { useParams, useNavigate, useOutletContext } from 'react-router-dom';
-import { ArrowLeft, Calendar, Tag, CreditCard, IndianRupee } from 'lucide-react';
-import { User, Expense, Category, PaymentMode, DEFAULT_PAYMENT_MODES } from '../interfaces';
+import { useSearchParams, useNavigate, useOutletContext } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
+import { User, Expense, Category, PaymentMode } from '../interfaces';
 import { expenseService } from '../services/expenseService';
 import { categoryService } from '../services/categoryService';
 import { paymentModeService } from '../services/paymentModeService';
 import toast from 'react-hot-toast';
 import { AppLayout } from '../components/layout/AppLayout';
+import { ExpenseCard } from '../components/ExpenseCard';
+import { Modal } from '../components/ui/Modal';
+import { ExpenseForm } from '../components/ExpenseForm';
 
-export const ExpenseDetails: React.FC = () => {
+export const PaymentModeDetails: React.FC = () => {
   const { user } = useOutletContext<{ user: User }>();
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
+  const [searchParams] = useSearchParams();
+  const modeName = searchParams.get('mode');
 
-  const [expense, setExpense] = useState<Expense | null>(null);
+  const [expenses, setExpenses] = useState<Expense[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [paymentModes, setPaymentModes] = useState<PaymentMode[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingExpense, setEditingExpense] = useState<Expense | undefined>(undefined);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   useEffect(() => {
-    if (!id) {
-      toast.error('Expense ID is missing');
+    if (!modeName) {
+      toast.error('Payment mode not found');
       navigate('/');
       return;
     }
     fetchData();
-  }, [user.id, id]);
+  }, [user.id, modeName]);
 
   const fetchData = async () => {
     setLoading(true);
     try {
+      const n = new Date();
       const [fetchedExpenses, fetchedCategories, fetchedPaymentModes] = await Promise.all([
-        expenseService.getExpenses(user.id),
+        expenseService.getExpenses(user.id, undefined, n.getMonth(), n.getFullYear()),
         categoryService.getCategories(user.id),
         paymentModeService.getPaymentModes(user.id)
       ]);
-      
-      const foundExpense = fetchedExpenses.find(e => e.id === id);
-      if (!foundExpense) {
-        toast.error('Expense not found');
-        navigate('/');
-        return;
-      }
-      
-      setExpense(foundExpense);
+      setExpenses(fetchedExpenses);
       setCategories(fetchedCategories);
       setPaymentModes(fetchedPaymentModes);
     } catch (error) {
       console.error('Error fetching data:', error);
-      toast.error('Failed to load expense details');
+      toast.error('Failed to load data');
     } finally {
       setLoading(false);
     }
   };
 
-  const categoryName = useMemo(() => {
-    if (!expense) return 'Unknown';
-    return categories.find(c => c.id === expense.categoryId)?.name || 'Unknown';
-  }, [expense, categories]);
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
 
-  const paymentModeDetails = useMemo(() => {
-    if (!expense) return null;
-    return paymentModes.find(m => m.name === expense.mode) || 
-           DEFAULT_PAYMENT_MODES.find(m => m.id === expense.mode || m.name === expense.mode);
-  }, [expense, paymentModes]);
+  const monthExpenses = useMemo(() => {
+    return expenses.filter(
+      e =>
+        e.mode === modeName &&
+        e.createdAt >= monthStart.getTime() &&
+        e.createdAt <= monthEnd.getTime()
+    );
+  }, [expenses, modeName, monthStart, monthEnd]);
 
-  const formatDateTime = (timestamp: number) => {
-    return new Date(timestamp).toLocaleString('en-US', {
-      weekday: 'long',
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true
+  const totalAmount = useMemo(() => {
+    return monthExpenses.reduce((sum, e) => sum + e.amount, 0);
+  }, [monthExpenses]);
+
+  const expensesByCategory = useMemo(() => {
+    const byCategory: { [key: string]: number } = {};
+    monthExpenses.forEach(expense => {
+      const label = categories.find(c => c.id === expense.categoryId)?.name || 'Unknown';
+      byCategory[label] = (byCategory[label] || 0) + expense.amount;
     });
+    return byCategory;
+  }, [monthExpenses, categories]);
+
+  const handleOpenForm = (expense?: Expense) => {
+    setEditingExpense(expense);
+    setIsModalOpen(true);
   };
+
+  const handleCloseForm = () => {
+    setIsModalOpen(false);
+    setEditingExpense(undefined);
+  };
+
+  const handleSubmit = async (data: Omit<Expense, 'id' | 'modifiedAt' | 'userId'>) => {
+    setIsSubmitting(true);
+    try {
+      if (editingExpense?.id) {
+        await expenseService.updateExpense(editingExpense.id, data);
+        toast.success('Expense updated!');
+      } else {
+        await expenseService.addExpense({
+          ...data,
+          userId: user.id
+        });
+        toast.success('Expense added!');
+      }
+      await fetchData();
+      handleCloseForm();
+    } catch (error) {
+      console.error('Error saving expense:', error);
+      toast.error('Failed to save expense');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (confirm('Are you sure you want to delete this expense?')) {
+      try {
+        await expenseService.deleteExpense(id);
+        toast.success('Expense deleted');
+        await fetchData();
+      } catch (error) {
+        console.error('Error deleting expense:', error);
+        toast.error('Failed to delete expense');
+      }
+    }
+  };
+
+  const getCategoryName = (id: string) => categories.find(c => c.id === id)?.name || 'Unknown';
+
+  const handleCategoryClick = (categoryId: string) => {
+    navigate(`/category-details?id=${categoryId}`);
+  };
+
+  const handlePaymentModeClick = (mode: string) => {
+    navigate(`/payment-mode-details?mode=${encodeURIComponent(mode)}`);
+  };
+
+  const monthLabel = monthStart.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 
   return (
     <AppLayout>
       <div className="p-4 sm:p-6 pb-24 space-y-6">
-        {/* Back Button */}
         <button
-          onClick={() => navigate(-1)}
-          className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium transition-colors"
+          onClick={() => navigate('/')}
+          className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
         >
           <ArrowLeft size={20} />
           <span>Back</span>
@@ -93,91 +154,76 @@ export const ExpenseDetails: React.FC = () => {
           <div className="flex justify-center py-12">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
           </div>
-        ) : !expense ? (
-          <div className="text-center py-12 bg-card rounded-2xl border border-main shadow-sm">
-            <p className="text-muted font-medium">Expense not found</p>
-          </div>
         ) : (
-          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            {/* Amount Header */}
-            <div className="bg-gradient-to-br from-indigo-600 to-blue-700 rounded-3xl p-8 text-white shadow-xl flex flex-col items-center text-center relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -ml-10 -mt-10" />
-              <div className="absolute bottom-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mb-10" />
-              
-              <div className="bg-white/20 p-3 rounded-full mb-4 backdrop-blur-md">
-                <IndianRupee size={32} />
-              </div>
-              <p className="text-blue-100 font-medium tracking-widest text-xs uppercase mb-1">Expense Amount</p>
-              <h2 className="text-5xl font-black tracking-tighter mb-2">₹{expense.amount.toFixed(2)}</h2>
-              <div className="flex items-center space-x-2 bg-black/20 px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm">
-                <Calendar size={14} />
-                <span>{new Date(expense.createdAt).toLocaleDateString()}</span>
-              </div>
-            </div>
-
-            {/* Details Card */}
-            <div className="bg-card rounded-2xl border border-main shadow-sm divide-y divide-main overflow-hidden">
-              {/* Category */}
-              <div className="p-5 flex items-start space-x-4">
-                <div className="p-2.5 bg-sky-50 dark:bg-sky-900/20 text-sky-600 dark:text-sky-400 rounded-xl">
-                  <Tag size={20} />
-                </div>
-                <div>
-                  <p className="text-[10px] font-bold text-muted uppercase tracking-wider mb-1">Category</p>
-                  <p className="text-lg font-bold text-main">{categoryName}</p>
-                </div>
-              </div>
-
-              {/* Payment Mode */}
-              <div className="p-5 flex items-start space-x-4">
-                <div className="p-2.5 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 rounded-xl">
-                  <CreditCard size={20} />
-                </div>
-                <div>
-                  <p className="text-[10px] font-bold text-muted uppercase tracking-wider mb-1">Payment Mode</p>
-                  <p className="text-lg font-bold text-main">{expense.mode}</p>
-                  {paymentModeDetails?.isCredit && (
-                    <span className="inline-flex mt-1 px-2 py-0.5 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-[10px] font-bold rounded-md uppercase">Credit Mode</span>
-                  )}
-                </div>
-              </div>
-
-              {/* Date & Time */}
-              <div className="p-5 flex items-start space-x-4">
-                <div className="p-2.5 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-xl">
-                  <Calendar size={20} />
-                </div>
-                <div>
-                  <p className="text-[10px] font-bold text-muted uppercase tracking-wider mb-1">Date & Time</p>
-                  <p className="text-sm font-semibold text-main leading-relaxed">
-                    {formatDateTime(expense.createdAt)}
-                  </p>
-                </div>
-              </div>
-
-              {/* Description */}
-              <div className="p-5 flex items-start space-x-4">
-                <div className="p-2.5 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 rounded-xl">
-                  <Tag size={20} className="rotate-90" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-[10px] font-bold text-muted uppercase tracking-wider mb-1">Description</p>
-                  <p className="text-base font-medium text-main text-justify leading-relaxed break-words">
-                    {expense.description}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Footer Metadata */}
-            {expense.modifiedAt && (
-              <p className="text-center text-[10px] text-muted font-medium">
-                Last modified on {formatDateTime(expense.modifiedAt)}
+          <div className="space-y-6">
+            <div className="bg-gradient-to-br from-cyan-600 to-blue-700 rounded-2xl p-6 text-white shadow-lg">
+              <span>Spent via</span>
+              <p className="text-cyan-100 font-medium tracking-wide text-sm mb-1 uppercase">
+                <b>{modeName}</b> — {monthLabel}
               </p>
+              <div className="flex items-baseline space-x-2">
+                <span className="text-4xl font-extrabold tracking-tight">₹{totalAmount.toFixed(2)}</span>
+                <span className="text-cyan-200 text-sm font-medium">Total</span>
+              </div>
+              <p className="text-cyan-100 text-sm mt-2">{monthExpenses.length} transaction(s)</p>
+            </div>
+
+            {Object.keys(expensesByCategory).length > 0 && (
+              <div className="bg-card rounded-2xl p-6 border border-main shadow-sm">
+                <h3 className="text-lg font-bold text-main mb-4">Breakdown by Category</h3>
+                <div className="space-y-3">
+                  {Object.entries(expensesByCategory).map(([name, amount]) => (
+                    <div key={name} className="flex items-center justify-between p-3 bg-primary rounded-lg">
+                      <span className="font-medium text-main">{name}</span>
+                      <span className="font-bold text-main">₹{amount.toFixed(2)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             )}
+
+            <div>
+              <h3 className="text-lg font-bold text-main mb-4 px-1">Transactions</h3>
+              {monthExpenses.length === 0 ? (
+                <div className="text-center py-12 bg-card rounded-2xl border border-main shadow-sm">
+                  <p className="text-muted font-medium">
+                    No expenses with this payment mode for {monthLabel}
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {monthExpenses.map(expense => (
+                    <ExpenseCard
+                      key={expense.id}
+                      expense={expense}
+                      categoryName={getCategoryName(expense.categoryId)}
+                      onEdit={handleOpenForm}
+                      onDelete={handleDelete}
+                      onCategoryClick={handleCategoryClick}
+                      onPaymentModeClick={handlePaymentModeClick}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={handleCloseForm}
+        title={editingExpense ? 'Edit Expense' : 'Add Expense'}
+      >
+        <ExpenseForm
+          initialData={editingExpense}
+          categories={categories}
+          paymentModes={paymentModes}
+          onSubmit={handleSubmit}
+          onCancel={handleCloseForm}
+          isSubmitting={isSubmitting}
+        />
+      </Modal>
     </AppLayout>
   );
 };
