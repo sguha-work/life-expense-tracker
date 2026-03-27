@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Sidebar } from './Sidebar';
 import { Menu } from 'lucide-react';
-import { useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import { User } from '../../interfaces';
 
 interface AppLayoutProps {
@@ -10,6 +10,7 @@ interface AppLayoutProps {
 
 export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const navigate = useNavigate();
   const { user } = useOutletContext<{ user: User }>() || { user: null };
 
   const getInitials = (name: string) => {
@@ -44,12 +45,15 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
           </div>
 
           {user && (
-            <div 
-              className="select-none [-webkit-tap-highlight-color:transparent] w-10 h-10 flex items-center justify-center bg-white/20 rounded-full border border-white/30 text-sm font-bold shadow-inner"
+            <button
+              type="button"
+              onClick={() => navigate('/user-details')}
+              className="select-none [-webkit-tap-highlight-color:transparent] w-10 h-10 flex items-center justify-center bg-white/20 rounded-full border border-white/30 text-sm font-bold shadow-inner hover:bg-white/30 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
               title={user.name}
+              aria-label="Open account details"
             >
               {getInitials(user.name)}
-            </div>
+            </button>
           )}
         </header>
 

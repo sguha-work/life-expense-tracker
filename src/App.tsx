@@ -19,6 +19,7 @@ const Visualize = lazy(() => import('./pages/Visualize').then(m => ({ default: m
 const ExportReport = lazy(() => import('./pages/ExportReport').then(m => ({ default: m.ExportReport })));
 const ExpenseDetails = lazy(() => import('./pages/ExpenseDetails').then(m => ({ default: m.ExpenseDetails })));
 const Budget = lazy(() => import('./pages/Budget').then(m => ({ default: m.Budget })));
+const UserDetails = lazy(() => import('./pages/UserDetails').then(m => ({ default: m.UserDetails })));
 
 const LoadingSpinner = () => (
   <div className="min-h-screen bg-slate-100 flex items-center justify-center">
@@ -53,6 +54,7 @@ function App() {
             <Route path="/history/year" element={<YearWiseHistory />} />
             <Route path="/visualize" element={<Visualize />} />
             <Route path="/export-report" element={<ExportReport />} />
+            <Route path="/user-details" element={<UserDetails />} />
           </Route>
 
           {/* Catch-all */}
