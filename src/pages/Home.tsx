@@ -38,7 +38,7 @@ export const Home: React.FC = () => {
     setLoading(true);
     try {
       const [fetchedExpenses, fetchedCategories, fetchedPaymentModes] = await Promise.all([
-        expenseService.getExpenses(user.id),
+        expenseService.getTodayExpensesPreferCache(user.id),
         categoryService.getCategories(user.id),
         paymentModeService.getPaymentModes(user.id)
       ]);
