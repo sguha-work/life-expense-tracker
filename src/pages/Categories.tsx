@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { Link, useOutletContext } from 'react-router-dom';
 import { Plus, Edit2, Trash2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
@@ -141,12 +141,30 @@ export const Categories: React.FC = () => {
           <div className="grid grid-cols-1 gap-3">
             {categories.map((cat) => (
               <div key={cat.id} className="bg-card p-4 rounded-xl shadow-sm border border-main flex items-center justify-between group transition-all hover:shadow-md hover:border-blue-100 dark:hover:border-blue-900">
-                <div className="flex flex-col">
-                  <span className="font-semibold text-main">{cat.name}</span>
-                  {cat.budgetAmount && cat.budgetAmount > 0 && (
-                    <span className="text-xs text-muted font-medium">
-                      budget {cat.budgetMode === 'd' ? 'daily' : cat.budgetMode === 'y' ? 'yearly' : 'monthly'} {cat.budgetAmount} INR
-                    </span>
+                <div className="flex flex-col min-w-0">
+                  {cat.budgetAmount && cat.budgetAmount > 0 && cat.id ? (
+                    <Link
+                      to={`/category-details?id=${cat.id}`}
+                      className="group flex flex-col text-left rounded-lg -m-1 p-1 hover:bg-blue-50/80 dark:hover:bg-blue-950/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                    >
+                      <span className="font-semibold text-main group-hover:text-blue-700 dark:group-hover:text-blue-300 underline-offset-2 group-hover:underline">
+                        {cat.name}
+                      </span>
+                      <span className="text-xs text-muted font-medium">
+                        budget {cat.budgetMode === 'd' ? 'daily' : cat.budgetMode === 'y' ? 'yearly' : 'monthly'}{' '}
+                        {cat.budgetAmount} INR
+                      </span>
+                    </Link>
+                  ) : (
+                    <>
+                      <span className="font-semibold text-main">{cat.name}</span>
+                      {cat.budgetAmount && cat.budgetAmount > 0 && (
+                        <span className="text-xs text-muted font-medium">
+                          budget {cat.budgetMode === 'd' ? 'daily' : cat.budgetMode === 'y' ? 'yearly' : 'monthly'}{' '}
+                          {cat.budgetAmount} INR
+                        </span>
+                      )}
+                    </>
                   )}
                 </div>
                 <div className="flex space-x-2">

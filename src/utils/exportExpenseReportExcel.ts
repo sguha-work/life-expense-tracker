@@ -57,35 +57,104 @@ function styleTotalRow(row: ExcelJS.Row): void {
   };
 }
 
+/** Monthly-equivalent limit for comparison with period spend (same as Budget exceeded sheet). */
+function getMonthlyBudgetLimit(cat: Category): number {
+  if (!cat.budgetAmount || cat.budgetAmount <= 0) return 0;
+  if (cat.budgetMode === 'd') return cat.budgetAmount * 30;
+  if (cat.budgetMode === 'y') return cat.budgetAmount / 12;
+  return cat.budgetAmount;
+}
+
+function budgetModeLabel(cat: Category): string {
+  if (cat.budgetMode === 'd') return 'Daily';
+  if (cat.budgetMode === 'y') return 'Yearly';
+  return 'Monthly';
+}
+
+/** Spending by category: one row per category (including ₹0), horizontal bars so every label fits. */
+async function renderCategoryBarChartPng(
+  labels: string[],
+  values: number[],
+  title: string
+): Promise<{ base64: string; width: number; height: number }> {
+  const canvas = document.createElement('canvas');
+  const n = Math.max(1, labels.length);
+  const rowPx = 36;
+  canvas.width = 760;
+  canvas.height = Math.min(2800, Math.max(360, 100 + n * rowPx));
+
+  const chart = new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Amount (INR)',
+          data: values,
+          backgroundColor: labels.map((_, i) => CHART_COLORS[i % CHART_COLORS.length]),
+          borderColor: '#1e40af',
+          borderWidth: 1,
+        },
+      ],
+    },
+    options: {
+      indexAxis: 'y',
+      animation: false,
+      responsive: false,
+      layout: { padding: { left: 4, right: 12, top: 8, bottom: 8 } },
+      plugins: {
+        title: {
+          display: true,
+          text: title,
+          font: { size: 14, weight: 'bold' },
+        },
+        legend: { display: false },
+      },
+      scales: {
+        x: {
+          beginAtZero: true,
+          ticks: {
+            callback: (v: string | number) => `₹${Number(v).toLocaleString('en-IN')}`,
+          },
+        },
+        y: {
+          grid: { display: false },
+          ticks: {
+            autoSkip: false,
+            font: { size: n > 20 ? 10 : 11 },
+          },
+        },
+      },
+    },
+  });
+
+  const dataUrl = canvas.toDataURL('image/png');
+  chart.destroy();
+  const base64 = dataUrl.includes(',') ? dataUrl.split(',')[1] : dataUrl;
+  return { base64, width: canvas.width, height: canvas.height };
+}
+
 async function renderChartToPngBase64(
-  type: 'bar' | 'pie',
+  type: 'pie',
   labels: string[],
   values: number[],
   title: string
 ): Promise<string> {
   const canvas = document.createElement('canvas');
-  canvas.width = type === 'pie' ? 520 : 720;
-  canvas.height = type === 'pie' ? 420 : 380;
+  canvas.width = 520;
+  canvas.height = 420;
 
   const chart = new Chart(canvas, {
     type,
     data: {
       labels,
       datasets: [
-        type === 'bar'
-          ? {
-              label: 'Amount (INR)',
-              data: values,
-              backgroundColor: labels.map((_, i) => CHART_COLORS[i % CHART_COLORS.length]),
-              borderColor: '#1e40af',
-              borderWidth: 1,
-            }
-          : {
-              data: values,
-              backgroundColor: labels.map((_, i) => CHART_COLORS[i % CHART_COLORS.length]),
-              borderColor: '#ffffff',
-              borderWidth: 2,
-            },
+        {
+          data: values,
+          backgroundColor: labels.map((_, i) => CHART_COLORS[i % CHART_COLORS.length]),
+          borderColor: '#ffffff',
+          borderWidth: 2,
+        },
       ],
     },
     options: {
@@ -98,25 +167,10 @@ async function renderChartToPngBase64(
           font: { size: 14, weight: 'bold' },
         },
         legend: {
-          display: type === 'pie',
+          display: true,
           position: 'right',
         },
       },
-      scales:
-        type === 'bar'
-          ? {
-              x: {
-                ticks: { maxRotation: 40, minRotation: 0, autoSkip: false },
-                grid: { display: false },
-              },
-              y: {
-                beginAtZero: true,
-                ticks: {
-                  callback: (v: string | number) => `₹${Number(v).toLocaleString('en-IN')}`,
-                },
-              },
-            }
-          : undefined,
     },
   });
 
@@ -312,7 +366,68 @@ export async function exportExpenseReportExcel(
     r3++;
   }
 
-  // --- Sheet 4: Charts ---
+  // --- Sheet 4: Budget ---
+  const sBudget = workbook.addWorksheet('Budget');
+  sBudget.columns = [
+    { width: 28 },
+    { width: 12 },
+    { width: 16 },
+    { width: 18 },
+    { width: 18 },
+    { width: 18 },
+  ];
+  sBudget.getRow(1).getCell(1).value = `Budget — ${periodLabel}`;
+  sBudget.mergeCells(1, 1, 1, 6);
+  sBudget.getRow(1).font = { bold: true, size: 14 };
+
+  const hBudget = sBudget.getRow(2);
+  hBudget.values = [
+    'Category',
+    'Budget mode',
+    'Budget (INR)',
+    'Monthly limit (INR)',
+    'Spent (INR)',
+    'Gap (INR)',
+  ];
+  styleHeaderRow(hBudget);
+
+  let rB = 3;
+  const budgetCategories = categories
+    .filter((c) => c.budgetAmount && c.budgetAmount > 0)
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+  for (const cat of budgetCategories) {
+    const monthlyLimit = getMonthlyBudgetLimit(cat);
+    const catSpent = expenses
+      .filter((e) => e.categoryId === cat.id)
+      .reduce((sum, e) => sum + e.amount, 0);
+    const gap = monthlyLimit - catSpent;
+
+    const br = sBudget.getRow(rB);
+    br.getCell(1).value = cat.name;
+    br.getCell(2).value = budgetModeLabel(cat);
+    br.getCell(3).value = cat.budgetAmount ?? 0;
+    br.getCell(3).numFmt = INR_FMT;
+    br.getCell(4).value = monthlyLimit;
+    br.getCell(4).numFmt = INR_FMT;
+    br.getCell(5).value = catSpent;
+    br.getCell(5).numFmt = INR_FMT;
+    br.getCell(6).value = gap;
+    br.getCell(6).numFmt = INR_FMT;
+    br.getCell(6).font = {
+      bold: true,
+      color: { argb: gap < 0 ? 'FFDC2626' : 'FF16A34A' },
+    };
+    rB++;
+  }
+
+  if (budgetCategories.length === 0) {
+    sBudget.getRow(rB).getCell(1).value = 'No categories with a budget for this export.';
+    sBudget.mergeCells(rB, 1, rB, 6);
+    rB++;
+  }
+
+  // --- Sheet 5: Charts ---
   const s4 = workbook.addWorksheet('Charts');
   s4.getColumn(1).width = 14;
   let chartRow = 1;
@@ -326,10 +441,25 @@ export async function exportExpenseReportExcel(
       'No expenses in this period — no charts generated.';
     chartRow += 2;
   } else {
+    const spendByCategoryId = new Map<string, number>();
+    for (const e of sorted) {
+      spendByCategoryId.set(e.categoryId, (spendByCategoryId.get(e.categoryId) ?? 0) + e.amount);
+    }
+
     const catTotals: { label: string; value: number }[] = [];
-    for (const cat of catNames) {
-      const sum = byCat.get(cat)!.reduce((s, e) => s + e.amount, 0);
-      catTotals.push({ label: cat, value: sum });
+    const knownIds = new Set<string>();
+    for (const c of categories) {
+      if (!c.id) continue;
+      knownIds.add(c.id);
+      catTotals.push({
+        label: c.name,
+        value: spendByCategoryId.get(c.id) ?? 0,
+      });
+    }
+    for (const [id, value] of spendByCategoryId) {
+      if (!knownIds.has(id)) {
+        catTotals.push({ label: getCategoryName(id), value });
+      }
     }
     catTotals.sort((a, b) => b.value - a.value);
 
@@ -340,18 +470,26 @@ export async function exportExpenseReportExcel(
     }
     modeTotals.sort((a, b) => b.value - a.value);
 
-    const barBase64 = await renderChartToPngBase64(
-      'bar',
+    const barChart = await renderCategoryBarChartPng(
       catTotals.map((c) => c.label),
       catTotals.map((c) => c.value),
       'Spending by category'
     );
-    const barId = workbook.addImage({ base64: barBase64, extension: 'png' });
+    const barId = workbook.addImage({ base64: barChart.base64, extension: 'png' });
+    let embedW = 640;
+    let embedH = Math.round(embedW * (barChart.height / barChart.width));
+    const maxEmbedH = 2000;
+    if (embedH > maxEmbedH) {
+      const scale = maxEmbedH / embedH;
+      embedH = maxEmbedH;
+      embedW = Math.round(embedW * scale);
+    }
+    embedH = Math.max(280, embedH);
     s4.addImage(barId, {
       tl: { col: 0, row: chartRow - 1 },
-      ext: { width: 640, height: 340 },
+      ext: { width: embedW, height: embedH },
     });
-    chartRow += 24;
+    chartRow += Math.max(24, Math.ceil(embedH / 18));
 
     s4.getRow(chartRow).getCell(1).value = 'Payment methods (share of spending)';
     s4.getRow(chartRow).font = { bold: true, size: 12 };
@@ -370,7 +508,7 @@ export async function exportExpenseReportExcel(
     });
   }
 
-  // --- Sheet 5: Budget exceeded ---
+  // --- Sheet 6: Budget exceeded ---
   const s5 = workbook.addWorksheet('Budget exceeded');
   s5.columns = [
     { width: 25 },
@@ -392,14 +530,7 @@ export async function exportExpenseReportExcel(
   for (const cat of categories) {
     if (!cat.budgetAmount || cat.budgetAmount <= 0) continue;
 
-    let monthlyLimit = 0;
-    if (cat.budgetMode === 'd') {
-      monthlyLimit = cat.budgetAmount * 30;
-    } else if (cat.budgetMode === 'y') {
-      monthlyLimit = cat.budgetAmount / 12;
-    } else {
-      monthlyLimit = cat.budgetAmount;
-    }
+    const monthlyLimit = getMonthlyBudgetLimit(cat);
 
     const catSpent = expenses
       .filter(e => e.categoryId === cat.id)
