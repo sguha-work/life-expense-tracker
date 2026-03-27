@@ -7,6 +7,11 @@ export const ProtectedRoute: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const refreshUser = async () => {
+    const currentUser = await authService.getCurrentUser();
+    if (currentUser) setUser(currentUser);
+  };
+
   useEffect(() => {
     const fetchUser = async () => {
       const currentUser = await authService.getCurrentUser();
@@ -24,5 +29,5 @@ export const ProtectedRoute: React.FC = () => {
     );
   }
 
-  return user ? <Outlet context={{ user }} /> : <Navigate to="/login" replace />;
+  return user ? <Outlet context={{ user, refreshUser }} /> : <Navigate to="/login" replace />;
 };
