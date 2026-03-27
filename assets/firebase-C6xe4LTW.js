@@ -1,1 +1,0 @@
-import{p as a}from"./@firebase-BkW04kxv.js";a("firebase","12.11.0","app");

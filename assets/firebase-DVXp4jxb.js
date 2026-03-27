@@ -1,0 +1,1 @@
+import{m as a}from"./@firebase-BKtoYilP.js";a("firebase","12.11.0","app");
