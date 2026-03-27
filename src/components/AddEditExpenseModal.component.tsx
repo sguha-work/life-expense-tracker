@@ -1,6 +1,6 @@
 import React from 'react';
 import { ExpenseForm } from './ExpenseForm.component';
-import { Modal } from './ui/Modal';
+import { ModalComponent } from './ui/Modal.component';
 import { Expense } from '../interfaces';
 interface AddEditExpenseModalProps {
     isModalOpen: boolean;
@@ -12,7 +12,7 @@ interface AddEditExpenseModalProps {
     isSubmitting: boolean;
 }
 export const AddEditExpenseModal: React.FC<AddEditExpenseModalProps> = (props) => (
-    <Modal
+    <ModalComponent
         isOpen={props.isModalOpen}
         onClose={props.handleCloseForm}
         title={props.editingExpense ? "Edit Expense" : "Add Expense"}
@@ -25,5 +25,5 @@ export const AddEditExpenseModal: React.FC<AddEditExpenseModalProps> = (props) =
             onCancel={props.handleCloseForm}
             isSubmitting={props.isSubmitting}
         />
-    </Modal>
+    </ModalComponent>
 )

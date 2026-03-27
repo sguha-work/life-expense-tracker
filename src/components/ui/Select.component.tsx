@@ -1,14 +1,14 @@
 import React, { SelectHTMLAttributes } from 'react';
-import { cn } from './Button';
+import { cn } from './Button.component';
 import { ChevronDown } from 'lucide-react';
 
-interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
+interface SelectComponentProps extends SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;
   error?: string;
   options: { label: string; value: string }[];
 }
 
-export const Select: React.FC<SelectProps> = React.forwardRef<HTMLSelectElement, SelectProps>(
+export const SelectComponent: React.FC<SelectComponentProps> = React.forwardRef<HTMLSelectElement, SelectComponentProps>(
   ({ className, label, error, options, ...props }, ref) => {
     return (
       <div className="flex flex-col space-y-1.5 w-full">
@@ -48,4 +48,4 @@ export const Select: React.FC<SelectProps> = React.forwardRef<HTMLSelectElement,
     );
   }
 );
-Select.displayName = 'Select';
+SelectComponent.displayName = 'Select';

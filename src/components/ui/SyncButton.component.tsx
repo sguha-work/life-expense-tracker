@@ -1,10 +1,10 @@
 import { RefreshCw } from 'lucide-react'
 import {memo} from 'react'
 import toast from 'react-hot-toast';
-interface SyncButtonProps {
+interface SyncButtonComponentProps {
     fetchData: () => void
 }
-function SyncButton(props: SyncButtonProps) {
+function SyncButtonComponent(props: SyncButtonComponentProps) {
     const handleSync = () => {
         localStorage.clear();
         props.fetchData();
@@ -20,4 +20,4 @@ function SyncButton(props: SyncButtonProps) {
         </button>
     )
 }
-export default memo(SyncButton);
+export default memo(SyncButtonComponent);

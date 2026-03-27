@@ -1,5 +1,5 @@
 import React from 'react';
-import SyncButton from './ui/SyncButton';
+import SyncButtonComponent from './ui/SyncButton.component';
 import { TrendingUp } from 'lucide-react';
 interface HomePageHeaderComponentProps{
     fetchData: () => Promise<void>;
@@ -17,7 +17,7 @@ interface HomePageHeaderComponentProps{
 export const HomePageHeaderComponent: React.FC<HomePageHeaderComponentProps> = (props) => (
     <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10" />
-          <SyncButton fetchData={props.fetchData}></SyncButton>
+          <SyncButtonComponent fetchData={props.fetchData}></SyncButtonComponent>
           <p className="text-blue-100 font-medium tracking-wide text-sm mb-1 uppercase">Today's Expense</p>
           <p className="text-blue-100 font-medium tracking-wide text-sm mb-1 uppercase">{props.formattedDate}</p>
           <div className="flex items-baseline space-x-2">

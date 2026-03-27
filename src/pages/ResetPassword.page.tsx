@@ -4,8 +4,8 @@ import { useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
 import { Lock } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { Input } from '../components/ui/Input';
-import { Button } from '../components/ui/Button';
+import { InputComponent } from '../components/ui/Input.component';
+import { ButtonComponent } from '../components/ui/Button.component';
 import { authService } from '../services/auth.service';
 
 type FormValues = {
@@ -86,7 +86,7 @@ export const ResetPassword: React.FC = () => {
           )}
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-            <Input
+            <InputComponent
               label="Email"
               type="email"
               readOnly
@@ -94,7 +94,7 @@ export const ResetPassword: React.FC = () => {
               className="bg-slate-50 dark:bg-slate-900/50"
             />
 
-            <Input
+            <InputComponent
               label="One-time code"
               type="text"
               inputMode="numeric"
@@ -111,7 +111,7 @@ export const ResetPassword: React.FC = () => {
               error={errors.otp?.message}
             />
 
-            <Input
+            <InputComponent
               label="New password"
               type="password"
               autoComplete="new-password"
@@ -123,7 +123,7 @@ export const ResetPassword: React.FC = () => {
               error={errors.password?.message}
             />
 
-            <Input
+            <InputComponent
               label="Confirm new password"
               type="password"
               autoComplete="new-password"
@@ -136,13 +136,13 @@ export const ResetPassword: React.FC = () => {
               error={errors.confirmPassword?.message}
             />
 
-            <Button
+            <ButtonComponent
               type="submit"
               className="w-full py-3 text-lg mt-4"
               isLoading={isLoading}
             >
               Update password
-            </Button>
+            </ButtonComponent>
           </form>
 
           <p className="mt-8 text-center text-sm text-slate-600 font-medium">

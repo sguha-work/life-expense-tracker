@@ -6,8 +6,8 @@ import { expenseService } from '../services/expense.service';
 import { categoryService } from '../services/category.service';
 import { paymentModeService } from '../services/paymentMode.service';
 import toast from 'react-hot-toast';
-import { Button } from '../components/ui/Button';
-import { AppLayout } from '../components/layout/AppLayout';
+import { ButtonComponent } from '../components/ui/Button.component';
+import { AppLayout } from '../components/layout/AppLayout.component';
 import { ExpenseCard } from '../components/ExpenseCard.component';
 import { AddEditExpenseModal } from '../components/AddEditExpenseModal.component';
 import { HomePageHeaderComponent } from '../components/HomePageHeader.component';
@@ -162,12 +162,12 @@ export const Home: React.FC = () => {
         monthTotal={monthTotal}
         ></HomePageHeaderComponent>
         {/* Action Button */}
-        <Button
+        <ButtonComponent
           className="w-full py-4 rounded-2xl shadow-md text-base"
           onClick={() => handleOpenForm()}
         >
           <Plus size={20} className="mr-2" /> Add Expense
-        </Button>
+        </ButtonComponent>
 
         {/* Today's List */}
         <div>

@@ -18,9 +18,9 @@ const PaymentModeDetails = lazy(() =>
   import('./pages/PaymentModeDetails.page').then(m => ({ default: m.PaymentModeDetails }))
 );
 const PaymentModes = lazy(() => import('./pages/PaymentModes.page').then(m => ({ default: m.PaymentModes })));
-const DateWiseHistory = lazy(() => import('./pages/history/DateWiseHistory').then(m => ({ default: m.DateWiseHistory })));
-const MonthWiseHistory = lazy(() => import('./pages/history/MonthWiseHistory').then(m => ({ default: m.MonthWiseHistory })));
-const YearWiseHistory = lazy(() => import('./pages/history/YearWiseHistory').then(m => ({ default: m.YearWiseHistory })));
+const DateWiseHistory = lazy(() => import('./pages/history/DateWiseHistory.page').then(m => ({ default: m.DateWiseHistory })));
+const MonthWiseHistory = lazy(() => import('./pages/history/MonthWiseHistory.page').then(m => ({ default: m.MonthWiseHistory })));
+const YearWiseHistory = lazy(() => import('./pages/history/YearWiseHistory.page').then(m => ({ default: m.YearWiseHistory })));
 const Visualize = lazy(() => import('./pages/Visualize.page').then(m => ({ default: m.Visualize })));
 const ExportReport = lazy(() => import('./pages/ExportReport.page').then(m => ({ default: m.ExportReport })));
 const ExpenseDetails = lazy(() => import('./pages/ExpenseDetails.page').then(m => ({ default: m.ExpenseDetails })));

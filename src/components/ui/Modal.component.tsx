@@ -3,14 +3,14 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 
-interface ModalProps {
+interface ModalComponentProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
   children: React.ReactNode;
 }
 
-export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
+export const ModalComponent: React.FC<ModalComponentProps> = ({ isOpen, onClose, title, children }) => {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {

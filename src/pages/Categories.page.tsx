@@ -5,10 +5,10 @@ import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { User, Category } from '../interfaces';
 import { categoryService } from '../services/category.service';
-import { Button } from '../components/ui/Button';
-import { Input } from '../components/ui/Input';
-import { Modal } from '../components/ui/Modal';
-import { AppLayout } from '../components/layout/AppLayout';
+import { ButtonComponent } from '../components/ui/Button.component';
+import { InputComponent } from '../components/ui/Input.component';
+import { ModalComponent } from '../components/ui/Modal.component';
+import { AppLayout } from '../components/layout/AppLayout.component';
 
 export const Categories: React.FC = () => {
   const { user } = useOutletContext<{ user: User }>();
@@ -121,9 +121,9 @@ export const Categories: React.FC = () => {
             <h2 className="text-2xl font-extrabold text-main tracking-tight">Categories</h2>
             <p className="text-sm text-muted font-medium">Manage your expense types</p>
           </div>
-          <Button onClick={() => handleOpenModal()} className="rounded-full w-12 h-12 p-0 flex items-center justify-center shadow-md dark:shadow-none">
+          <ButtonComponent onClick={() => handleOpenModal()} className="rounded-full w-12 h-12 p-0 flex items-center justify-center shadow-md dark:shadow-none">
             <Plus size={24} />
-          </Button>
+          </ButtonComponent>
         </div>
 
         {loading ? (
@@ -133,9 +133,9 @@ export const Categories: React.FC = () => {
         ) : categories.length === 0 ? (
           <div className="text-center py-12 bg-card rounded-2xl border border-main shadow-sm">
             <p className="text-muted font-medium mb-4">No categories added yet.</p>
-            <Button variant="outline" onClick={() => handleOpenModal()}>
+            <ButtonComponent variant="outline" onClick={() => handleOpenModal()}>
               Create First Category
-            </Button>
+            </ButtonComponent>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-3">
@@ -184,13 +184,13 @@ export const Categories: React.FC = () => {
         )}
       </div>
 
-      <Modal
+      <ModalComponent
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         title={editingCategory ? "Edit Category" : "New Category"}
       >
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <Input
+          <InputComponent
             maxLength={200}
             label="Category Name"
             placeholder="e.g. Utilities"
@@ -198,15 +198,15 @@ export const Categories: React.FC = () => {
             error={errors.name?.message}
           />
           <div className="pt-4 flex space-x-3">
-            <Button type="button" variant="outline" className="flex-1" onClick={handleCloseModal} disabled={isSubmitting}>
+            <ButtonComponent type="button" variant="outline" className="flex-1" onClick={handleCloseModal} disabled={isSubmitting}>
               Cancel
-            </Button>
-            <Button type="submit" className="flex-1" isLoading={isSubmitting}>
+            </ButtonComponent>
+            <ButtonComponent type="submit" className="flex-1" isLoading={isSubmitting}>
               {editingCategory ? 'Update' : 'Add'}
-            </Button>
+            </ButtonComponent>
           </div>
         </form>
-      </Modal>
+      </ModalComponent>
     </AppLayout>
   );
 };

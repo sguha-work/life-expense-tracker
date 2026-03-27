@@ -4,8 +4,8 @@ import { useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
 import { UserPlus } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { Input } from '../components/ui/Input';
-import { Button } from '../components/ui/Button';
+import { InputComponent } from '../components/ui/Input.component';
+import { ButtonComponent } from '../components/ui/Button.component';
 import { authService } from '../services/auth.service';
 
 export const Signup: React.FC = () => {
@@ -63,7 +63,7 @@ export const Signup: React.FC = () => {
               </div>
             )}
             
-            <Input
+            <InputComponent
               label="Full Name"
               type="text"
               placeholder="John Doe"
@@ -72,7 +72,7 @@ export const Signup: React.FC = () => {
               required={true}
             />
 
-            <Input
+            <InputComponent
               label="Phone Number"
               type="tel"
               placeholder="1234567890"
@@ -84,7 +84,7 @@ export const Signup: React.FC = () => {
               required={true}
             />
 
-            <Input
+            <InputComponent
               label="Email"
               type="email"
               autoComplete="email"
@@ -100,7 +100,7 @@ export const Signup: React.FC = () => {
               error={errors.email?.message as string}
             />
             
-            <Input
+            <InputComponent
               label="Password"
               type="password"
               placeholder="••••••••"
@@ -112,7 +112,7 @@ export const Signup: React.FC = () => {
               required={true}
             />
 
-            <Input
+            <InputComponent
               label="Confirm Password"
               type="password"
               placeholder="••••••••"
@@ -124,9 +124,9 @@ export const Signup: React.FC = () => {
               required={true}
             />
 
-            <Button type="submit" className="w-full py-3 mt-4" variant="primary" isLoading={isLoading}>
+            <ButtonComponent type="submit" className="w-full py-3 mt-4" variant="primary" isLoading={isLoading}>
               Sign Up
-            </Button>
+            </ButtonComponent>
           </form>
 
           <p className="mt-6 text-center text-sm text-slate-600 font-medium">

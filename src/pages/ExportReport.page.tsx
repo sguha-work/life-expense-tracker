@@ -5,8 +5,8 @@ import { User, Expense, Category } from '../interfaces';
 import { expenseService } from '../services/expense.service';
 import { categoryService } from '../services/category.service';
 import toast from 'react-hot-toast';
-import { AppLayout } from '../components/layout/AppLayout';
-import { Button } from '../components/ui/Button';
+import { AppLayout } from '../components/layout/AppLayout.component';
+import { ButtonComponent } from '../components/ui/Button.component';
 import { useTheme } from '../configuration/ThemeContext';
 
 export const ExportReport: React.FC = () => {
@@ -161,7 +161,7 @@ export const ExportReport: React.FC = () => {
             )}
           </div>
 
-          <Button
+          <ButtonComponent
             type="button"
             className="w-full sm:w-auto py-3 px-6"
             onClick={handleExport}
@@ -170,7 +170,7 @@ export const ExportReport: React.FC = () => {
           >
             <FileDown size={20} className="mr-2 shrink-0" />
             Export Excel
-          </Button>
+          </ButtonComponent>
 
           <p className="text-xs text-muted leading-relaxed">
             The file includes four sheets: (1) all expenses with date, time, category, payment mode,

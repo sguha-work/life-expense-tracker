@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sidebar } from './Sidebar';
+import { Sidebar } from './Sidebar.component';
 import { Menu } from 'lucide-react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import { User } from '../../interfaces';

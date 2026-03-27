@@ -5,9 +5,9 @@ import { ArrowLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { User } from '../interfaces';
 import { authService } from '../services/auth.service';
-import { AppLayout } from '../components/layout/AppLayout';
-import { Button } from '../components/ui/Button';
-import { Input } from '../components/ui/Input';
+import { AppLayout } from '../components/layout/AppLayout.component';
+import { ButtonComponent } from '../components/ui/Button.component';
+import { InputComponent } from '../components/ui/Input.component';
 
 interface UserDetailsForm {
   name: string;
@@ -75,7 +75,7 @@ export const UserDetails: React.FC = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="bg-card rounded-2xl border border-main shadow-sm p-5 space-y-5">
             <h3 className="text-sm font-bold text-main uppercase tracking-wide">Editable</h3>
-            <Input
+            <InputComponent
               label="Name"
               maxLength={200}
               {...register('name', {
@@ -84,9 +84,9 @@ export const UserDetails: React.FC = () => {
               })}
               error={errors.name?.message}
             />
-            <Button type="submit" className="w-full" disabled={!isDirty}>
+            <ButtonComponent type="submit" className="w-full" disabled={!isDirty}>
               Save name
-            </Button>
+            </ButtonComponent>
           </div>
         </form>
 

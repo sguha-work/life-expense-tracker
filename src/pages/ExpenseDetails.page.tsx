@@ -6,7 +6,7 @@ import { expenseService } from '../services/expense.service';
 import { categoryService } from '../services/category.service';
 import { paymentModeService } from '../services/paymentMode.service';
 import toast from 'react-hot-toast';
-import { AppLayout } from '../components/layout/AppLayout';
+import { AppLayout } from '../components/layout/AppLayout.component';
 
 export const ExpenseDetails: React.FC = () => {
   const { user } = useOutletContext<{ user: User }>();

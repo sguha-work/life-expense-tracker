@@ -4,8 +4,8 @@ import { useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
 import { KeyRound } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { Input } from '../components/ui/Input';
-import { Button } from '../components/ui/Button';
+import { InputComponent } from '../components/ui/Input.component';
+import { ButtonComponent } from '../components/ui/Button.component';
 import { authService } from '../services/auth.service';
 
 type FormValues = { email: string };
@@ -77,7 +77,7 @@ export const ForgotPassword: React.FC = () => {
             </div>
           ) : (
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-              <Input
+              <InputComponent
                 label="Email"
                 type="email"
                 autoComplete="email"
@@ -92,13 +92,13 @@ export const ForgotPassword: React.FC = () => {
                 error={errors.email?.message}
               />
 
-              <Button
+              <ButtonComponent
                 type="submit"
                 className="w-full py-3 text-lg mt-4"
                 isLoading={isLoading}
               >
                 Send reset email
-              </Button>
+              </ButtonComponent>
             </form>
           )}
 

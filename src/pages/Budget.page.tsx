@@ -5,10 +5,10 @@ import toast from 'react-hot-toast';
 import { Edit2, Trash2, Wallet } from 'lucide-react';
 import { User, Category } from '../interfaces';
 import { categoryService } from '../services/category.service';
-import { Button } from '../components/ui/Button';
-import { Input } from '../components/ui/Input';
-import { Select } from '../components/ui/Select';
-import { AppLayout } from '../components/layout/AppLayout';
+import { ButtonComponent } from '../components/ui/Button.component';
+import { InputComponent } from '../components/ui/Input.component';
+import { SelectComponent } from '../components/ui/Select.component';
+import { AppLayout } from '../components/layout/AppLayout.component';
 
 interface BudgetFormData {
   categoryId: string;
@@ -112,7 +112,7 @@ export const Budget: React.FC = () => {
         {/* Budget Form */}
         <div className="bg-card p-6 rounded-2xl border border-main shadow-sm space-y-4">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <Select
+            <SelectComponent
               label="Category"
               options={[
                 { label: 'Select Category', value: '' },
@@ -123,7 +123,7 @@ export const Budget: React.FC = () => {
             />
 
             <div className="grid grid-cols-2 gap-4">
-              <Select
+              <SelectComponent
                 label="Budget Mode"
                 options={[
                   { label: 'Daily', value: 'd' },
@@ -133,7 +133,7 @@ export const Budget: React.FC = () => {
                 {...register('budgetMode', { required: true })}
               />
 
-              <Input
+              <InputComponent
                 label="Amount (INR)"
                 type="number"
                 step="0.01"
@@ -146,9 +146,9 @@ export const Budget: React.FC = () => {
               />
             </div>
 
-            <Button type="submit" className="w-full" isLoading={isSubmitting}>
+            <ButtonComponent type="submit" className="w-full" isLoading={isSubmitting}>
               Save Budget
-            </Button>
+            </ButtonComponent>
           </form>
         </div>
 

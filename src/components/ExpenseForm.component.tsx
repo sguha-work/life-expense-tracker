@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Calendar } from 'lucide-react';
-import { Input } from './ui/Input';
-import { Select } from './ui/Select';
-import { Button } from './ui/Button';
+import { InputComponent } from './ui/Input.component';
+import { SelectComponent } from './ui/Select.component';
+import { ButtonComponent } from './ui/Button.component';
 import { Expense, Category, PaymentMode, DEFAULT_PAYMENT_MODES } from '../interfaces';
 
 interface ExpenseFormProps {
@@ -71,7 +71,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
 
   return (
     <form onSubmit={handleSubmit(submitHandler)} className="space-y-5">
-      <Input
+      <InputComponent
         label="Description"
         maxLength= {200}
         placeholder="e.g. Groceries"
@@ -80,7 +80,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
       />
       
       <div className={showDateTime ? "block animate-in fade-in slide-in-from-top-2 duration-300" : "hidden"}>
-        <Input
+        <InputComponent
           label="Date & Time"
           type="datetime-local"
           max={toLocalISOString(Date.now())}
@@ -105,7 +105,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
         </div>
       )}
       
-      <Input
+      <InputComponent
         label="Amount"
         type="number"
         step="1.00"
@@ -118,14 +118,14 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
         error={errors.amount?.message}
       />
 
-      <Select
+      <SelectComponent
         label="Category"
         {...register('categoryId', { required: 'Category is required' })}
         error={errors.categoryId?.message}
         options={[{ label: 'Select a category...', value: '' }, ...categoryOptions]}
       />
 
-      <Select
+      <SelectComponent
         label="Payment Mode"
         {...register('mode', { required: 'Payment mode is required' })}
         error={errors.mode?.message}
@@ -133,7 +133,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
       />
 
       <div className="pt-4 flex space-x-3">
-        <Button 
+        <ButtonComponent 
           type="button" 
           variant="outline" 
           className="flex-1" 
@@ -141,14 +141,14 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
           disabled={isSubmitting}
         >
           Cancel
-        </Button>
-        <Button 
+        </ButtonComponent>
+        <ButtonComponent 
           type="submit" 
           className="flex-1"
           isLoading={isSubmitting}
         >
           {initialData ? 'Update' : 'Add'} Expense
-        </Button>
+        </ButtonComponent>
       </div>
     </form>
   );

@@ -1,12 +1,12 @@
 import React, { InputHTMLAttributes } from 'react';
-import { cn } from './Button';
+import { cn } from './Button.component';
 
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+interface InputComponentProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
 }
 
-export const Input: React.FC<InputProps> = React.forwardRef<HTMLInputElement, InputProps>(
+export const InputComponent: React.FC<InputComponentProps> = React.forwardRef<HTMLInputElement, InputComponentProps>(
   ({ className, label, error, ...props }, ref) => {
     return (
       <div className="flex flex-col space-y-1.5 w-full">
@@ -31,4 +31,4 @@ export const Input: React.FC<InputProps> = React.forwardRef<HTMLInputElement, In
     );
   }
 );
-Input.displayName = 'Input';
+InputComponent.displayName = 'Input';

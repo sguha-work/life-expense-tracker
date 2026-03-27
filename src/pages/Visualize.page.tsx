@@ -3,9 +3,9 @@ import { useOutletContext } from 'react-router-dom';
 import { User, Expense, Category } from '../interfaces';
 import { expenseService } from '../services/expense.service';
 import { categoryService } from '../services/category.service';
-import { AppLayout } from '../components/layout/AppLayout';
-import { ExpensePieChart } from '../components/charts/ExpensePieChart';
-import { ExpenseBarChart } from '../components/charts/ExpenseBarChart';
+import { AppLayout } from '../components/layout/AppLayout.component';
+import { ExpensePieChart } from '../components/charts/ExpensePieChart.component';
+import { ExpenseBarChart } from '../components/charts/ExpenseBarChart.component';
 
 export const Visualize: React.FC = () => {
   const { user } = useOutletContext<{ user: User }>();

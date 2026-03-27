@@ -6,9 +6,9 @@ import { expenseService } from '../services/expense.service';
 import { categoryService } from '../services/category.service';
 import { paymentModeService } from '../services/paymentMode.service';
 import toast from 'react-hot-toast';
-import { AppLayout } from '../components/layout/AppLayout';
+import { AppLayout } from '../components/layout/AppLayout.component';
 import { ExpenseCard } from '../components/ExpenseCard.component';
-import { Modal } from '../components/ui/Modal';
+import { ModalComponent } from '../components/ui/Modal.component';
 import { ExpenseForm } from '../components/ExpenseForm.component';
 
 export const PaymentModeDetails: React.FC = () => {
@@ -210,7 +210,7 @@ export const PaymentModeDetails: React.FC = () => {
         )}
       </div>
 
-      <Modal
+      <ModalComponent
         isOpen={isModalOpen}
         onClose={handleCloseForm}
         title={editingExpense ? 'Edit Expense' : 'Add Expense'}
@@ -223,7 +223,7 @@ export const PaymentModeDetails: React.FC = () => {
           onCancel={handleCloseForm}
           isSubmitting={isSubmitting}
         />
-      </Modal>
+      </ModalComponent>
     </AppLayout>
   );
 };

@@ -6,13 +6,13 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonComponentProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'danger' | 'outline' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
   isLoading?: boolean;
 }
 
-export const Button: React.FC<ButtonProps> = ({
+export const ButtonComponent: React.FC<ButtonComponentProps> = ({
   className,
   variant = 'primary',
   size = 'md',

@@ -5,10 +5,10 @@ import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { User, PaymentMode, DEFAULT_PAYMENT_MODES } from '../interfaces';
 import { paymentModeService } from '../services/paymentMode.service';
-import { Button } from '../components/ui/Button';
-import { Input } from '../components/ui/Input';
-import { Modal } from '../components/ui/Modal';
-import { AppLayout } from '../components/layout/AppLayout';
+import { ButtonComponent } from '../components/ui/Button.component';
+import { InputComponent } from '../components/ui/Input.component';
+import { ModalComponent } from '../components/ui/Modal.component';
+import { AppLayout } from '../components/layout/AppLayout.component';
 
 export const PaymentModes: React.FC = () => {
   const { user } = useOutletContext<{ user: User }>();
@@ -107,9 +107,9 @@ export const PaymentModes: React.FC = () => {
             <h2 className="text-2xl font-extrabold text-main tracking-tight">Payment Modes</h2>
             <p className="text-sm text-muted font-medium">Manage your payment methods</p>
           </div>
-          <Button onClick={() => handleOpenModal()} className="rounded-full w-12 h-12 p-0 flex items-center justify-center shadow-md dark:shadow-none">
+          <ButtonComponent onClick={() => handleOpenModal()} className="rounded-full w-12 h-12 p-0 flex items-center justify-center shadow-md dark:shadow-none">
             <Plus size={24} />
-          </Button>
+          </ButtonComponent>
         </div>
 
         {loading ? (
@@ -137,9 +137,9 @@ export const PaymentModes: React.FC = () => {
               {customModes.length === 0 ? (
                 <div className="text-center py-8 bg-card rounded-2xl border border-main shadow-sm">
                   <p className="text-muted font-medium mb-3">No custom payment modes yet</p>
-                  <Button variant="outline" size="sm" onClick={() => handleOpenModal()}>
+                  <ButtonComponent variant="outline" size="sm" onClick={() => handleOpenModal()}>
                     Create Custom Mode
-                  </Button>
+                  </ButtonComponent>
                 </div>
               ) : (
                 <div className="space-y-2">
@@ -174,13 +174,13 @@ export const PaymentModes: React.FC = () => {
         )}
       </div>
 
-      <Modal
+      <ModalComponent
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         title={editingMode ? "Edit Payment Mode" : "New Payment Mode"}
       >
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <Input
+          <InputComponent
             maxLength={200}
             label="Method Name"
             placeholder="e.g. PayPal"
@@ -199,15 +199,15 @@ export const PaymentModes: React.FC = () => {
             </label>
           </div>
           <div className="pt-4 flex space-x-3">
-            <Button type="button" variant="outline" className="flex-1" onClick={handleCloseModal} disabled={isSubmitting}>
+            <ButtonComponent type="button" variant="outline" className="flex-1" onClick={handleCloseModal} disabled={isSubmitting}>
               Cancel
-            </Button>
-            <Button type="submit" className="flex-1" isLoading={isSubmitting}>
+            </ButtonComponent>
+            <ButtonComponent type="submit" className="flex-1" isLoading={isSubmitting}>
               {editingMode ? 'Update' : 'Add'}
-            </Button>
+            </ButtonComponent>
           </div>
         </form>
-      </Modal>
+      </ModalComponent>
     </AppLayout>
   );
 };

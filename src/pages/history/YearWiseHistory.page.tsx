@@ -4,14 +4,14 @@ import { User, Expense, Category, PaymentMode, DEFAULT_PAYMENT_MODES } from '../
 import { expenseService } from '../../services/expense.service';
 import { categoryService } from '../../services/category.service';
 import { paymentModeService } from '../../services/paymentMode.service';
-import { AppLayout } from '../../components/layout/AppLayout';
+import { AppLayout } from '../../components/layout/AppLayout.component';
 import { ExpenseCard } from '../../components/ExpenseCard.component';
-import { Modal } from '../../components/ui/Modal';
+import { ModalComponent } from '../../components/ui/Modal.component';
 import { ExpenseForm } from '../../components/ExpenseForm.component';
 import { useTheme } from '../../configuration/ThemeContext';
 import toast from 'react-hot-toast';
 
-export const MonthWiseHistory: React.FC = () => {
+export const YearWiseHistory: React.FC = () => {
   const { user } = useOutletContext<{ user: User }>();
   const navigate = useNavigate();
   const { theme } = useTheme();
@@ -21,7 +21,6 @@ export const MonthWiseHistory: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   const now = new Date();
-  const [selectedMonth, setSelectedMonth] = useState(now.getMonth());
   const [selectedYear, setSelectedYear] = useState(now.getFullYear());
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -30,13 +29,13 @@ export const MonthWiseHistory: React.FC = () => {
 
   useEffect(() => {
     fetchData();
-  }, [user.id, selectedMonth, selectedYear]);
+  }, [user.id, selectedYear]);
 
   const fetchData = async () => {
     setLoading(true);
     try {
       const [fetchedExpenses, fetchedCategories, fetchedPaymentModes] = await Promise.all([
-        expenseService.getExpensesFromFirebase(user.id, undefined, selectedMonth, selectedYear),
+        expenseService.getExpensesFromFirebase(user.id, undefined, undefined, selectedYear),
         categoryService.getCategories(user.id),
         paymentModeService.getPaymentModes(user.id)
       ]);
@@ -119,48 +118,21 @@ export const MonthWiseHistory: React.FC = () => {
     navigate(`/payment-mode-details?mode=${encodeURIComponent(mode)}`);
   };
 
-  const months = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
-  ];
-
   return (
     <AppLayout>
       <div className="p-4 sm:p-6 space-y-6 pb-24">
         <div>
           <div>
-            <h2 className="text-2xl font-extrabold tracking-tight" style={{ color: theme === 'light' ? 'black' : 'white' }}>Month-wise History</h2>
-            <p className="text-sm text-slate-500 font-medium">View and manage expenses by month</p>
+            <h2 className="text-2xl font-extrabold tracking-tight" style={{ color: theme === 'light' ? 'black' : 'white' }}>Yearly History</h2>
+            <p className="text-sm text-slate-500 font-medium">View and manage expenses by year</p>
           </div>
-          <div className="flex gap-2 mt-4">
-            <select
-              value={selectedMonth}
-              onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
-              className="block w-full px-4 py-2 bg-white border border-slate-200 rounded-xl font-medium text-black shadow-sm [color-scheme:light] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              {months.map((month, index) => (
-                <option 
-                  key={month} 
-                  value={index}
-                  className="bg-white text-black"
-                  disabled={selectedYear === now.getFullYear() && index > now.getMonth()}
-                >
-                  {month}
-                </option>
-              ))}
-            </select>
+          <div className="relative mt-4">
             <select
               value={selectedYear}
-              onChange={(e) => {
-                const year = parseInt(e.target.value);
-                setSelectedYear(year);
-                if (year === now.getFullYear() && selectedMonth > now.getMonth()) {
-                  setSelectedMonth(now.getMonth());
-                }
-              }}
+              onChange={(e) => setSelectedYear(parseInt(e.target.value))}
               className="block w-full px-4 py-2 bg-white border border-slate-200 rounded-xl font-medium text-black shadow-sm [color-scheme:light] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
-              {[...Array(5)].map((_, i) => (
+              {[...Array(10)].map((_, i) => (
                 <option
                   key={now.getFullYear() - i}
                   value={now.getFullYear() - i}
@@ -195,7 +167,7 @@ export const MonthWiseHistory: React.FC = () => {
           </div>
         ) : expenses.length === 0 ? (
           <div className="text-center py-12 bg-white rounded-2xl border border-slate-100 shadow-sm">
-            <p className="text-slate-500 font-medium">No expenses recorded for this month.</p>
+            <p className="text-slate-500 font-medium">No expenses recorded for this year.</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -214,7 +186,7 @@ export const MonthWiseHistory: React.FC = () => {
         )}
       </div>
 
-      <Modal 
+      <ModalComponent 
         isOpen={isModalOpen} 
         onClose={handleCloseForm} 
         title={editingExpense ? "Edit Expense" : "Add Expense"}
@@ -227,7 +199,7 @@ export const MonthWiseHistory: React.FC = () => {
           onCancel={handleCloseForm}
           isSubmitting={isSubmitting}
         />
-      </Modal>
+      </ModalComponent>
     </AppLayout>
   );
 };
