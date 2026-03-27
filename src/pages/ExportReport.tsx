@@ -72,7 +72,7 @@ export const ExportReport: React.FC = () => {
     setExporting(true);
     try {
       const { exportExpenseReportExcel } = await import('../utils/exportExpenseReportExcel');
-      await exportExpenseReportExcel(expenses, getCategoryName, selectedYear, selectedMonth);
+      await exportExpenseReportExcel(expenses, getCategoryName, selectedYear, selectedMonth, categories);
       toast.success('Excel report downloaded');
     } catch (error) {
       console.error('Export failed:', error);

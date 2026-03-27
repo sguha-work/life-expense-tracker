@@ -1,6 +1,6 @@
 import ExcelJS from 'exceljs';
 import { Chart, registerables } from 'chart.js';
-import type { Expense } from '../interfaces';
+import type { Expense, Category } from '../interfaces';
 
 Chart.register(...registerables);
 
@@ -130,7 +130,8 @@ export async function exportExpenseReportExcel(
   expenses: Expense[],
   getCategoryName: (categoryId: string) => string,
   year: number,
-  monthIndex: number
+  monthIndex: number,
+  categories: Category[]
 ): Promise<void> {
   const workbook = new ExcelJS.Workbook();
   workbook.creator = 'Life Expense Tracker';
@@ -367,6 +368,61 @@ export async function exportExpenseReportExcel(
       tl: { col: 0, row: chartRow - 1 },
       ext: { width: 480, height: 390 },
     });
+  }
+
+  // --- Sheet 5: Budget exceeded ---
+  const s5 = workbook.addWorksheet('Budget exceeded');
+  s5.columns = [
+    { width: 25 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+  ];
+  s5.getRow(1).getCell(1).value = `Budget Exceeded — ${periodLabel}`;
+  s5.mergeCells(1, 1, 1, 4);
+  s5.getRow(1).font = { bold: true, size: 14 };
+
+  const h5 = s5.getRow(2);
+  h5.values = ['Category', 'Monthly Limit', 'Spent Amount', 'Over Budget'];
+  styleHeaderRow(h5);
+
+  let r5 = 3;
+  let exceededCount = 0;
+
+  for (const cat of categories) {
+    if (!cat.budgetAmount || cat.budgetAmount <= 0) continue;
+
+    let monthlyLimit = 0;
+    if (cat.budgetMode === 'd') {
+      monthlyLimit = cat.budgetAmount * 30;
+    } else if (cat.budgetMode === 'y') {
+      monthlyLimit = cat.budgetAmount / 12;
+    } else {
+      monthlyLimit = cat.budgetAmount;
+    }
+
+    const catSpent = expenses
+      .filter(e => e.categoryId === cat.id)
+      .reduce((sum, e) => sum + e.amount, 0);
+
+    if (catSpent > monthlyLimit) {
+      exceededCount++;
+      const row = s5.getRow(r5);
+      row.getCell(1).value = cat.name;
+      row.getCell(2).value = monthlyLimit;
+      row.getCell(2).numFmt = INR_FMT;
+      row.getCell(3).value = catSpent;
+      row.getCell(3).numFmt = INR_FMT;
+      row.getCell(4).value = catSpent - monthlyLimit;
+      row.getCell(4).numFmt = INR_FMT;
+      row.getCell(4).font = { color: { argb: 'FFFF0000' }, bold: true };
+      r5++;
+    }
+  }
+
+  if (exceededCount === 0) {
+    s5.getRow(r5).getCell(1).value = 'No budgets exceeded in this period.';
+    r5++;
   }
 
   const buffer = await workbook.xlsx.writeBuffer();
