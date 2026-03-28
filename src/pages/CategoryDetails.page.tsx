@@ -7,7 +7,7 @@ import { categoryService } from '../services/category.service';
 import { paymentModeService } from '../services/paymentMode.service';
 import toast from 'react-hot-toast';
 import { AppLayout } from '../components/layout/AppLayout.component';
-import { ExpenseCard } from '../components/ExpenseCard.component';
+import ExpenseCard from '../components/ExpenseCard.component';
 import { ModalComponent } from '../components/ui/Modal.component';
 import { ExpenseForm } from '../components/ExpenseForm.component';
 
@@ -317,6 +317,7 @@ export const CategoryDetails: React.FC = () => {
           onSubmit={handleSubmit}
           onCancel={handleCloseForm}
           isSubmitting={isSubmitting}
+          isEditing={editingExpense ? true : false}
         />
       </ModalComponent>
     </AppLayout>

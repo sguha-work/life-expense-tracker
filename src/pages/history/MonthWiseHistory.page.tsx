@@ -5,7 +5,7 @@ import { expenseService } from '../../services/expense.service';
 import { categoryService } from '../../services/category.service';
 import { paymentModeService } from '../../services/paymentMode.service';
 import { AppLayout } from '../../components/layout/AppLayout.component';
-import { ExpenseCard } from '../../components/ExpenseCard.component';
+import ExpenseCard from '../../components/ExpenseCard.component';
 import { ModalComponent } from '../../components/ui/Modal.component';
 import { ExpenseForm } from '../../components/ExpenseForm.component';
 import { useTheme } from '../../configuration/ThemeContext';
@@ -177,15 +177,15 @@ export const MonthWiseHistory: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center">
             <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-1">Total Spends</p>
-            <p className="text-2xl font-extrabold text-slate-800">₹{totals.total.toFixed(2)}</p>
+            <p className="text-2xl font-extrabold text-slate-800">₹{parseInt(totals.total.toFixed(2))}</p>
           </div>
           <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center">
             <p className="text-[10px] text-red-400 uppercase font-bold tracking-wider mb-1">Credit Spends</p>
-            <p className="text-2xl font-extrabold text-slate-800">₹{totals.credit.toFixed(2)}</p>
+            <p className="text-2xl font-extrabold text-slate-800">₹{parseInt(totals.credit.toFixed(2))}</p>
           </div>
           <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center">
             <p className="text-[10px] text-green-400 uppercase font-bold tracking-wider mb-1">Other Spends</p>
-            <p className="text-2xl font-extrabold text-slate-800">₹{totals.other.toFixed(2)}</p>
+            <p className="text-2xl font-extrabold text-slate-800">₹{parseInt(totals.other.toFixed(2))}</p>
           </div>
         </div>
 
@@ -226,6 +226,7 @@ export const MonthWiseHistory: React.FC = () => {
           onSubmit={handleSubmit}
           onCancel={handleCloseForm}
           isSubmitting={isSubmitting}
+          isEditing={editingExpense ? true : false}
         />
       </ModalComponent>
     </AppLayout>

@@ -8,7 +8,7 @@ import { paymentModeService } from '../services/paymentMode.service';
 import toast from 'react-hot-toast';
 import { ButtonComponent } from '../components/ui/Button.component';
 import { AppLayout } from '../components/layout/AppLayout.component';
-import { ExpenseCard } from '../components/ExpenseCard.component';
+import ExpenseCard from '../components/ExpenseCard.component';
 import { AddEditExpenseModal } from '../components/AddEditExpenseModal.component';
 import { HomePageHeaderComponent } from '../components/HomePageHeader.component';
 

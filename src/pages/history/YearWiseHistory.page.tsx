@@ -5,7 +5,7 @@ import { expenseService } from '../../services/expense.service';
 import { categoryService } from '../../services/category.service';
 import { paymentModeService } from '../../services/paymentMode.service';
 import { AppLayout } from '../../components/layout/AppLayout.component';
-import { ExpenseCard } from '../../components/ExpenseCard.component';
+import ExpenseCard from '../../components/ExpenseCard.component';
 import { ModalComponent } from '../../components/ui/Modal.component';
 import { ExpenseForm } from '../../components/ExpenseForm.component';
 import { useTheme } from '../../configuration/ThemeContext';
@@ -198,6 +198,7 @@ export const YearWiseHistory: React.FC = () => {
           onSubmit={handleSubmit}
           onCancel={handleCloseForm}
           isSubmitting={isSubmitting}
+          isEditing={editingExpense ? true : false}
         />
       </ModalComponent>
     </AppLayout>

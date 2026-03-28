@@ -24,6 +24,7 @@ export const AddEditExpenseModal: React.FC<AddEditExpenseModalProps> = (props) =
             onSubmit={props.handleSubmit}
             onCancel={props.handleCloseForm}
             isSubmitting={props.isSubmitting}
+            isEditing = {props.editingExpense ? true : false}
         />
     </ModalComponent>
 )

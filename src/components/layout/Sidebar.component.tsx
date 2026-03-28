@@ -117,7 +117,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                   >
                     <Calendar size={16} /> <span>Month-wise</span>
                   </NavLink>
-                  <NavLink
+                  {/* <NavLink
                     to="/history/year"
                     onClick={onClose}
                     className={({ isActive }) =>
@@ -127,7 +127,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                     }
                   >
                     <Layers size={16} /> <span>Yearly</span>
-                  </NavLink>
+                  </NavLink> */}
                 </motion.div>
               )}
             </AnimatePresence>

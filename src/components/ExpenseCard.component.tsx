@@ -11,7 +11,7 @@ interface ExpenseCardProps {
   onPaymentModeClick?: (mode: string) => void;
 }
 
-export const ExpenseCard: React.FC<ExpenseCardProps> = ({
+const ExpenseCard: React.FC<ExpenseCardProps> = ({
   expense,
   categoryName,
   onEdit,
@@ -95,3 +95,4 @@ export const ExpenseCard: React.FC<ExpenseCardProps> = ({
     </div>
   );
 };
+export default React.memo(ExpenseCard);

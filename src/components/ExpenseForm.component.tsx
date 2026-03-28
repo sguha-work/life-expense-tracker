@@ -12,6 +12,7 @@ interface ExpenseFormProps {
   paymentModes: PaymentMode[];
   onSubmit: (data: Omit<Expense, 'id' | 'modifiedAt' | 'userId'>) => Promise<void>;
   onCancel: () => void;
+  isEditing: boolean;
   isSubmitting?: boolean;
 }
 
@@ -35,7 +36,8 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
   paymentModes,
   onSubmit,
   onCancel,
-  isSubmitting
+  isSubmitting,
+  isEditing
 }) => {
   const [showDateTime, setShowDateTime] = useState(false);
   
@@ -68,7 +70,6 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
       createdAt: new Date(data.datetime).getTime(),
     });
   };
-
   return (
     <form onSubmit={handleSubmit(submitHandler)} className="space-y-5">
       <InputComponent
@@ -79,7 +80,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
         error={errors.description?.message}
       />
       
-      <div className={showDateTime ? "block animate-in fade-in slide-in-from-top-2 duration-300" : "hidden"}>
+      <div className={showDateTime || isEditing ? "block animate-in fade-in slide-in-from-top-2 duration-300" : "hidden"}>
         <InputComponent
           label="Date & Time"
           type="datetime-local"
