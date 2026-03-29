@@ -28,6 +28,7 @@ export const Home: React.FC = () => {
     creditTotal: 0,
     otherTotal: 0
   });
+  const [monthTotal, setMonthTotal] = useState(0);
 
   useEffect(() => {
     fetchData();
@@ -36,14 +37,16 @@ export const Home: React.FC = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [fetchedExpenses, fetchedCategories, fetchedPaymentModes] = await Promise.all([
+      const [fetchedExpenses, fetchedCategories, fetchedPaymentModes, fetchedMonthTotal] = await Promise.all([
         expenseService.getTodayExpensesPreferCache(user.id),
         categoryService.getCategories(user.id),
-        paymentModeService.getPaymentModes(user.id)
+        paymentModeService.getPaymentModes(user.id),
+        expenseService.getMonthTotal(user.id)
       ]);
       setExpenses(fetchedExpenses);
       setCategories(fetchedCategories);
       setPaymentModes(fetchedPaymentModes);
+      setMonthTotal(fetchedMonthTotal);
       setYesterdayTotals(
         expenseService.getCachedYesterdayTotals(user.id) ?? {
           total: 0,
@@ -60,7 +63,6 @@ export const Home: React.FC = () => {
 
   const today = new Date();
   const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-  const monthStart = new Date(todayStart.getFullYear(), todayStart.getMonth(), 1);
 
   const todaysExpenses = useMemo(() => {
     return expenses.filter(e => e.createdAt >= todayStart.getTime());
@@ -81,11 +83,6 @@ export const Home: React.FC = () => {
 
   const otherTotal = useMemo(() => todayTotal - creditTotal, [todayTotal, creditTotal]);
 
-  const monthTotal = useMemo(() => {
-    return expenses
-      .filter(e => e.createdAt >= monthStart.getTime())
-      .reduce((sum, e) => sum + e.amount, 0);
-  }, [expenses, monthStart]);
 
   const handleOpenForm = (expense?: Expense) => {
     if (categories.length === 0) {
