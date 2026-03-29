@@ -33,6 +33,17 @@ export type YesterdayTotalsCache = {
   otherTotal: number;
 };
 
+/**
+ * Fetches all expenses for the current calendar month and returns the total amount.
+ */
+async function fetchCurrentMonthTotal(userId: string): Promise<number> {
+  const now = new Date();
+  const start = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+  const end = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999).getTime();
+  const expenses = await fetchExpensesInRange(userId, start, end);
+  return expenses.reduce((sum, e) => sum + e.amount, 0);
+}
+
 function isCreditExpense(modeName: string, paymentModes: PaymentMode[]): boolean {
   const m =
     paymentModes.find(pm => pm.name === modeName) ||
@@ -189,6 +200,11 @@ export const expenseService = {
    * Otherwise loads today from Firebase and refreshes caches.
    */
   getTodayExpensesPreferCache: loadTodayFromCacheOrFirebase,
+
+  /**
+   * Fetches all expenses for the current calendar month from Firebase and returns the sum.
+   */
+  getMonthTotal: fetchCurrentMonthTotal,
 
   getCachedYesterdayTotals(userId: string): YesterdayTotalsCache | null {
     return cacheService.get<YesterdayTotalsCache>(CACHE_YESTERDAY_TOTALS(userId));

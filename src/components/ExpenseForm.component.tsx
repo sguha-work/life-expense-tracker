@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Calendar } from 'lucide-react';
 import { InputComponent } from './ui/Input.component';
@@ -24,6 +24,8 @@ interface FormData {
   datetime: string;
 }
 
+const validateNotFuture = (value: string) => new Date(value).getTime() <= Date.now() || 'Cannot select a future date and time';
+
 const toLocalISOString = (timestamp: number) => {
   const d = new Date(timestamp);
   const pad = (n: number) => n.toString().padStart(2, '0');
@@ -41,15 +43,26 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
 }) => {
   const [showDateTime, setShowDateTime] = useState(false);
   
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+  const { register, handleSubmit, formState: { errors }, reset } = useForm<FormData>({
     defaultValues: {
       description: initialData?.description || '',
       amount: initialData?.amount || 0,
       mode: initialData?.mode || 'Cash',
       categoryId: initialData?.categoryId || '',
-      datetime: toLocalISOString(initialData?.createdAt || Date.now()),
     }
   });
+
+  useEffect(() => {
+    // Set datetime and maxDatetime after initial render to avoid calling impure functions during render
+    const datetimeValue = toLocalISOString(initialData?.createdAt ?? Date.now());
+    reset({
+      description: initialData?.description || '',
+      amount: initialData?.amount || 0,
+      mode: initialData?.mode || 'Cash',
+      categoryId: initialData?.categoryId || '',
+      datetime: datetimeValue,
+    });
+  }, [initialData, reset]);
 
   const categoryOptions = categories.map(c => ({ label: c.name, value: c.id! }));
   if (categoryOptions.length === 0) {
@@ -84,10 +97,9 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
         <InputComponent
           label="Date & Time"
           type="datetime-local"
-          max={toLocalISOString(Date.now())}
           {...register('datetime', { 
             required: 'Date and time is required',
-            validate: (value) => new Date(value).getTime() <= Date.now() || 'Cannot select a future date and time'
+            validate: validateNotFuture
           })}
           error={errors.datetime?.message}
         />
