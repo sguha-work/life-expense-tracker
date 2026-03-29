@@ -60,9 +60,12 @@ export const CategoryDetails: React.FC = () => {
     return categories.find(c => c.id === categoryId);
   }, [categories, categoryId]);
 
-  const now = new Date();
-  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-  const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+  const monthStart = useMemo(() => {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), 1);
+  }, []);
+
+  const monthEnd = useMemo(() => new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 0, 23, 59, 59, 999), [monthStart]);
 
   const monthExpenses = useMemo(() => {
     return expenses.filter(
