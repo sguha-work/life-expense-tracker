@@ -18,11 +18,21 @@ interface ExpenseFormProps {
 
 interface FormData {
   description: string;
-  amount: number;
+  amount: string;
   mode: string;
   categoryId: string;
   datetime: string;
 }
+
+const evaluateExpression = (expr: string | number): number => {
+  if (expr === undefined || expr === null || expr === '') return 0;
+  if (typeof expr === 'number') return expr;
+  return expr
+    .split('+')
+    .map(part => parseFloat(part.trim()))
+    .filter(val => !isNaN(val))
+    .reduce((sum, val) => sum + val, 0);
+};
 
 const validateNotFuture = (value: string) => new Date(value).getTime() <= Date.now() || 'Cannot select a future date and time';
 
@@ -43,10 +53,10 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
 }) => {
   const [showDateTime, setShowDateTime] = useState(false);
   
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<FormData>({
+  const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm<FormData>({
     defaultValues: {
       description: initialData?.description || '',
-      amount: initialData?.amount || 0,
+      amount: initialData?.amount?.toString() || '',
       mode: initialData?.mode || 'Cash',
       categoryId: initialData?.categoryId || '',
     }
@@ -57,7 +67,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
     const datetimeValue = toLocalISOString(initialData?.createdAt ?? Date.now());
     reset({
       description: initialData?.description || '',
-      amount: initialData?.amount || 0,
+      amount: initialData?.amount?.toString() || '',
       mode: initialData?.mode || 'Cash',
       categoryId: initialData?.categoryId || '',
       datetime: datetimeValue,
@@ -77,11 +87,21 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
   const submitHandler = async (data: FormData) => {
     await onSubmit({
       description: data.description,
-      amount: Number(data.amount),
+      amount: evaluateExpression(data.amount),
       mode: data.mode,
       categoryId: data.categoryId,
       createdAt: new Date(data.datetime).getTime(),
     });
+  };
+
+  const handleAmountBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    if (val.includes('+')) {
+      const result = evaluateExpression(val);
+      if (result > 0) {
+        setValue('amount', result.toString());
+      }
+    }
   };
   return (
     <form onSubmit={handleSubmit(submitHandler)} className="space-y-5">
@@ -120,14 +140,13 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
       
       <InputComponent
         label="Amount"
-        type="number"
-        step="1.00"
-        placeholder="0.00"
-        max= {99999999}
+        type="text"
+        placeholder="0.00 (supports 10+20)"
         {...register('amount', { 
           required: 'Amount is required',
-          min: { value: 0.01, message: 'Amount must be greater than 0' }
+          validate: (val) => evaluateExpression(val) > 0 || 'Amount must be greater than 0'
         })}
+        onBlur={handleAmountBlur}
         error={errors.amount?.message}
       />
 

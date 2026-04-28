@@ -17,8 +17,9 @@ export const Visualize: React.FC = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
+        const now = new Date();
         const [fetchedExpenses, fetchedCategories] = await Promise.all([
-          expenseService.getExpenses(user.id),
+          expenseService.getExpenses(user.id, undefined, undefined, now.getFullYear()),
           categoryService.getCategories(user.id)
         ]);
         setExpenses(fetchedExpenses);
@@ -98,14 +99,6 @@ export const Visualize: React.FC = () => {
     return monthNames.map(name => ({ name, value: monthlyTotals[name] }));
   }, [expenses]);
 
-  const currentYearCategoryData = useMemo(() => {
-    const now = new Date();
-    const currentYearExpenses = expenses.filter(e => {
-      const d = new Date(e.createdAt);
-      return d.getFullYear() === now.getFullYear();
-    });
-    return prepareCategoryData(currentYearExpenses);
-  }, [expenses, categories]);
 
   return (
     <AppLayout>
@@ -132,10 +125,6 @@ export const Visualize: React.FC = () => {
               title="Month's Payment Mode Breakdown" 
             />
 
-            <ExpensePieChart 
-              data={currentYearCategoryData} 
-              title="Year's Category Breakdown" 
-            />
 
             <ExpenseBarChart 
               data={yearlyTrendData} 
