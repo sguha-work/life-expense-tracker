@@ -130,7 +130,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
           <button 
             type="button" 
             onClick={() => setShowDateTime(true)}
-            className="text-sm text-blue-600 font-medium hover:text-blue-700 flex items-center transition-colors"
+            className="no-glass text-sm text-blue-600 font-medium hover:text-blue-700 flex items-center transition-colors"
           >
             <Calendar size={14} className="mr-1.5" /> 
             Show date & time

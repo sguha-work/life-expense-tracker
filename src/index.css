@@ -15,6 +15,14 @@
   --text-secondary: #64748b;
   --border-color: #e2e8f0;
   --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+
+  /* Liquid glass tokens */
+  --glass-bg: rgba(255, 255, 255, 0.18);
+  --glass-border: rgba(255, 255, 255, 0.45);
+  --glass-shine-top: rgba(255, 255, 255, 0.55);
+  --glass-shine-bottom: rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 4px 16px rgba(0, 0, 0, 0.12), 0 1.5px 4px rgba(0, 0, 0, 0.08);
+  --glass-blur: 14px;
 }
 
 :root[data-theme='dark'] {
@@ -24,6 +32,14 @@
   --text-secondary: #94a3b8;
   --border-color: #334155;
   --card-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.5);
+
+  /* Liquid glass tokens — dark mode */
+  --glass-bg: rgba(255, 255, 255, 0.07);
+  --glass-border: rgba(255, 255, 255, 0.15);
+  --glass-shine-top: rgba(255, 255, 255, 0.22);
+  --glass-shine-bottom: rgba(255, 255, 255, 0.03);
+  --glass-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 1.5px 4px rgba(0, 0, 0, 0.25);
+  --glass-blur: 18px;
 }
 
 body {
@@ -46,4 +62,184 @@ body {
 
 .border-main {
   border-color: var(--border-color);
+}
+
+/* =====================================================================
+   LIQUID GLASS — Global Button Effect
+   Applies to every <button> in the app.
+   The effect is layered:
+     1. backdrop-filter blur  → frosted glass depth
+     2. ::before pseudo       → top specular highlight (bright rim)
+     3. ::after  pseudo       → bottom tint / refraction gradient
+   Colored variants override the glass tint color via inline CSS
+   custom props set in ButtonComponent.
+   ===================================================================== */
+
+@keyframes glass-shimmer {
+  0%   { transform: translateX(-100%) skewX(-15deg); }
+  100% { transform: translateX(250%)  skewX(-15deg); }
+}
+
+button {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  background-color: var(--btn-glass-bg, var(--glass-bg)) !important;
+  border: 1px solid var(--btn-glass-border, var(--glass-border)) !important;
+  box-shadow: var(--btn-glass-shadow, var(--glass-shadow)),
+              inset 0 1px 0 var(--glass-shine-top),
+              inset 0 -1px 0 var(--glass-shine-bottom) !important;
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease,
+    opacity 0.2s ease !important;
+  transform: translateZ(0); /* GPU layer */
+}
+
+/* Top specular rim highlight */
+button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    160deg,
+    var(--glass-shine-top) 0%,
+    transparent 50%,
+    var(--glass-shine-bottom) 100%
+  );
+}
+
+/* Shimmer sweep on hover */
+button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 40%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 100%
+  );
+  transform: translateX(-100%) skewX(-15deg);
+  border-radius: inherit;
+}
+
+button:hover::after {
+  animation: glass-shimmer 0.55s ease forwards;
+}
+
+button:hover {
+  box-shadow: var(--btn-glass-shadow, var(--glass-shadow)),
+              inset 0 1px 0 rgba(255,255,255,0.7),
+              inset 0 -1px 0 rgba(255,255,255,0.12),
+              0 0 0 1px var(--btn-glass-border, var(--glass-border)) !important;
+  transform: translateY(-1px) translateZ(0);
+}
+
+button:active {
+  transform: translateY(0.5px) translateZ(0) scale(0.99);
+  box-shadow: var(--btn-glass-shadow, var(--glass-shadow)),
+              inset 0 1px 0 rgba(255,255,255,0.5),
+              inset 0 2px 6px rgba(0,0,0,0.12) !important;
+}
+
+button:disabled,
+button[disabled] {
+  transform: none !important;
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ── Variant overrides (via data-variant attribute set in ButtonComponent) ── */
+
+/* Primary — blue glass */
+button[data-variant="primary"] {
+  --btn-glass-bg:     rgba(37, 99, 235, 0.72);
+  --btn-glass-border: rgba(147, 197, 253, 0.55);
+  --btn-glass-shadow: 0 4px 20px rgba(37, 99, 235, 0.35), 0 1.5px 4px rgba(37, 99, 235, 0.2);
+  color: #ffffff !important;
+}
+
+/* Secondary — light blue glass */
+button[data-variant="secondary"] {
+  --btn-glass-bg:     rgba(219, 234, 254, 0.55);
+  --btn-glass-border: rgba(147, 197, 253, 0.5);
+  --btn-glass-shadow: 0 4px 14px rgba(59, 130, 246, 0.15);
+  color: #1d4ed8 !important;
+}
+
+/* Danger — red glass */
+button[data-variant="danger"] {
+  --btn-glass-bg:     rgba(239, 68, 68, 0.68);
+  --btn-glass-border: rgba(252, 165, 165, 0.5);
+  --btn-glass-shadow: 0 4px 20px rgba(239, 68, 68, 0.3), 0 1.5px 4px rgba(239, 68, 68, 0.2);
+  color: #ffffff !important;
+}
+
+/* Outline — neutral glass */
+button[data-variant="outline"] {
+  --btn-glass-bg:     rgba(255, 255, 255, 0.12);
+  --btn-glass-border: var(--border-color);
+  --btn-glass-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  color: var(--text-primary) !important;
+}
+
+/* Ghost — near-invisible glass */
+button[data-variant="ghost"] {
+  --btn-glass-bg:     rgba(255, 255, 255, 0.05);
+  --btn-glass-border: transparent;
+  --btn-glass-shadow: none;
+  color: var(--text-secondary) !important;
+}
+
+/* Dark-mode tweaks for secondary & outline */
+:root[data-theme='dark'] button[data-variant="secondary"] {
+  --btn-glass-bg:     rgba(59, 130, 246, 0.18);
+  --btn-glass-border: rgba(147, 197, 253, 0.25);
+  color: #93c5fd !important;
+}
+
+:root[data-theme='dark'] button[data-variant="outline"] {
+  --btn-glass-bg:     rgba(255, 255, 255, 0.06);
+  color: var(--text-primary) !important;
+}
+
+/* Buttons that live on a colored background (e.g. topbar, header gradient)
+   use white-tinted glass automatically because the parent backdrop is dark/colored */
+.bg-blue-600 button,
+.from-blue-600 button,
+header button {
+  --btn-glass-bg:     rgba(255, 255, 255, 0.18);
+  --btn-glass-border: rgba(255, 255, 255, 0.4);
+  --btn-glass-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+  color: #ffffff !important;
+}
+
+/* Escape hatch — opt any button out of the liquid glass effect */
+button.no-glass,
+button.no-glass:hover,
+button.no-glass:active {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+button.no-glass::before,
+button.no-glass::after {
+  display: none !important;
 }

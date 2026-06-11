@@ -14,6 +14,7 @@ function SyncButtonComponent(props: SyncButtonComponentProps) {
         <button
             onClick={handleSync}
             className="absolute top-4 right-4 p-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors"
+            style={{"position":"absolute"}}
             title="Sync"
         >
             <RefreshCw size={16} className="text-white" />
