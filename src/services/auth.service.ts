@@ -15,6 +15,7 @@ import { User, AuthSession } from '../interfaces';
 import { config } from '../configuration/configure';
 import { sendPasswordResetEmail } from './email.service';
 import { buildResetPasswordUrl } from '../utils/resetPasswordUrl';
+import { authStorageService } from './authStorage.service';
 
 const USERS_COLLECTION = 'users';
 
@@ -26,6 +27,21 @@ function normalizeEmail(email: string): string {
 
 function generateTenDigitOtp(): string {
   return String(Math.floor(1000000000 + Math.random() * 9000000000));
+}
+
+async function migrateSessionFromCookie(): Promise<AuthSession | null> {
+  const cookieData = Cookies.get(config.auth.cookieName);
+  if (!cookieData) return null;
+
+  try {
+    const session = JSON.parse(cookieData) as AuthSession;
+    await authStorageService.setSession(session);
+    Cookies.remove(config.auth.cookieName);
+    return session;
+  } catch {
+    Cookies.remove(config.auth.cookieName);
+    return null;
+  }
 }
 
 export const authService = {
@@ -67,8 +83,7 @@ export const authService = {
 
     const docRef = await addDoc(usersRef, newUser);
     const user: User = { id: docRef.id, ...newUser };
-    localStorage['username'] = user.name;
-    this.createSession(user);
+    await this.createSession(user);
     return user;
   },
 
@@ -90,43 +105,46 @@ export const authService = {
       throw new Error("Invalid email or password");
     }
 
-    this.createSession(user);
+    await this.createSession(user);
     return user;
   },
 
-  createSession(user: User): void {
+  async createSession(user: User): Promise<void> {
     const expiresAt = Date.now() + config.auth.cookieExpiresInHours * 60 * 60 * 1000;
     const sessionData: AuthSession = { userId: user.id, expiresAt };
-    
-    Cookies.set(config.auth.cookieName, JSON.stringify(sessionData), {
-      expires: config.auth.cookieExpiresInHours / 24, // js-cookie expects days
-      secure: window.location.protocol === 'https:',
-      sameSite: 'strict',
-    });
+
+    await Promise.all([
+      authStorageService.setSession(sessionData),
+      authStorageService.setUsername(user.name),
+    ]);
+
+    Cookies.remove(config.auth.cookieName);
   },
 
-  getSession(): AuthSession | null {
-    const cookieData = Cookies.get(config.auth.cookieName);
-    if (!cookieData) return null;
+  async getSession(): Promise<AuthSession | null> {
+    let session = await authStorageService.getSession();
 
-    try {
-      const session: AuthSession = JSON.parse(cookieData);
-      if (Date.now() > session.expiresAt) {
-        this.logout();
-        return null;
-      }
-      return session;
-    } catch {
+    if (!session) {
+      session = await migrateSessionFromCookie();
+    }
+
+    if (!session) return null;
+
+    if (Date.now() > session.expiresAt) {
+      await this.logout();
       return null;
     }
+
+    return session;
   },
 
-  logout(): void {
+  async logout(): Promise<void> {
+    await authStorageService.clearAll();
     Cookies.remove(config.auth.cookieName);
   },
 
   async getCurrentUser(): Promise<User | null> {
-    const session = this.getSession();
+    const session = await this.getSession();
     if (!session) return null;
 
     const usersRef = collection(db, USERS_COLLECTION);
@@ -134,7 +152,7 @@ export const authService = {
     const snapshot = await getDocs(q);
 
     if (snapshot.empty) {
-      this.logout();
+      await this.logout();
       return null;
     }
     
@@ -230,10 +248,6 @@ export const authService = {
     }
     const userRef = doc(db, USERS_COLLECTION, userId);
     await updateDoc(userRef, { name: trimmed });
-    try {
-      localStorage['username'] = trimmed;
-    } catch {
-      /* ignore */
-    }
+    await authStorageService.setUsername(trimmed);
   },
 };

@@ -34,6 +34,34 @@ const evaluateExpression = (expr: string | number): number => {
     .reduce((sum, val) => sum + val, 0);
 };
 
+const applyAmountExpression = (amountInput: string, description: string) => {
+  const expression = amountInput.trim();
+  if (!expression.includes('+')) {
+    return {
+      amount: evaluateExpression(expression),
+      description,
+      amountDisplay: expression,
+    };
+  }
+
+  const amount = evaluateExpression(expression);
+  const breakdownSuffix = ` (${expression})`;
+  const trimmedDescription = description.trim();
+  let updatedDescription = description;
+
+  if (amount > 0 && !trimmedDescription.endsWith(breakdownSuffix)) {
+    updatedDescription = trimmedDescription
+      ? `${trimmedDescription}${breakdownSuffix}`
+      : expression;
+  }
+
+  return {
+    amount,
+    description: updatedDescription,
+    amountDisplay: amount > 0 ? amount.toString() : expression,
+  };
+};
+
 const validateNotFuture = (value: string) => new Date(value).getTime() <= Date.now() || 'Cannot select a future date and time';
 
 const toLocalISOString = (timestamp: number) => {
@@ -53,7 +81,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
 }) => {
   const [showDateTime, setShowDateTime] = useState(false);
   
-  const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm<FormData>({
+  const { register, handleSubmit, formState: { errors }, reset, setValue, getValues } = useForm<FormData>({
     defaultValues: {
       description: initialData?.description || '',
       amount: initialData?.amount?.toString() || '',
@@ -85,9 +113,11 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
   ];
 
   const submitHandler = async (data: FormData) => {
+    const { amount, description } = applyAmountExpression(data.amount, data.description);
+
     await onSubmit({
-      description: data.description,
-      amount: evaluateExpression(data.amount),
+      description,
+      amount,
       mode: data.mode,
       categoryId: data.categoryId,
       createdAt: new Date(data.datetime).getTime(),
@@ -96,11 +126,12 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
 
   const handleAmountBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     const val = e.target.value;
-    if (val.includes('+')) {
-      const result = evaluateExpression(val);
-      if (result > 0) {
-        setValue('amount', result.toString());
-      }
+    if (!val.includes('+')) return;
+
+    const { amount, description, amountDisplay } = applyAmountExpression(val, getValues('description'));
+    if (amount > 0) {
+      setValue('amount', amountDisplay);
+      setValue('description', description);
     }
   };
   return (

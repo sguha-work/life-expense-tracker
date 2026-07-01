@@ -6,6 +6,10 @@ import { categoryService } from '../services/category.service';
 import { AppLayout } from '../components/layout/AppLayout.component';
 import { ExpensePieChart } from '../components/charts/ExpensePieChart.component';
 import { ExpenseBarChart } from '../components/charts/ExpenseBarChart.component';
+import {
+  CategoryMonthlySpendingTable,
+  buildCategoryMonthlySpendingRows,
+} from '../components/charts/CategoryMonthlySpendingTable.component';
 
 export const Visualize: React.FC = () => {
   const { user } = useOutletContext<{ user: User }>();
@@ -67,6 +71,11 @@ export const Visualize: React.FC = () => {
     return prepareCategoryData(currentMonthExpenses);
   }, [expenses, categories]);
 
+  const currentMonthCategoryTableRows = useMemo(
+    () => buildCategoryMonthlySpendingRows(expenses, categories),
+    [expenses, categories]
+  );
+
   const currentMonthPaymentData = useMemo(() => {
     const now = new Date();
     const currentMonthExpenses = expenses.filter(e => {
@@ -115,11 +124,14 @@ export const Visualize: React.FC = () => {
         ) : (
           <div className="grid grid-cols-1 gap-8">
             
-            <ExpensePieChart 
-              data={currentMonthCategoryData} 
-              title="Month's Category Breakdown" 
-            />
-            
+            <div className="space-y-4">
+              <ExpensePieChart
+                data={currentMonthCategoryData}
+                title="Month's Category Breakdown"
+              />
+              <CategoryMonthlySpendingTable rows={currentMonthCategoryTableRows} />
+            </div>
+
             <ExpensePieChart 
               data={currentMonthPaymentData} 
               title="Month's Payment Mode Breakdown" 
