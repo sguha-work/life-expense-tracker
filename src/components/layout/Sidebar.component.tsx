@@ -23,9 +23,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     { name: 'Export report', path: '/export-report', icon: <FileSpreadsheet size={20} /> },
   ];
 
-  const handleLogout = () => {
-    localStorage.clear(); // clearing everything from localstorage
-    authService.logout();
+  const handleLogout = async () => {
+    await authService.logout();
     window.location.href = '#/login';
   };
 
