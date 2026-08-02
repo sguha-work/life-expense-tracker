@@ -85,7 +85,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
     defaultValues: {
       description: initialData?.description || '',
       amount: initialData?.amount?.toString() || '',
-      mode: initialData?.mode || 'Cash',
+      mode: initialData?.mode || 'UPI',
       categoryId: initialData?.categoryId || '',
     }
   });
@@ -96,7 +96,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
     reset({
       description: initialData?.description || '',
       amount: initialData?.amount?.toString() || '',
-      mode: initialData?.mode || 'Cash',
+      mode: initialData?.mode || 'UPI',
       categoryId: initialData?.categoryId || '',
       datetime: datetimeValue,
     });
